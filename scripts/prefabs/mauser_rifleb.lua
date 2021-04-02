@@ -92,8 +92,8 @@ local function OnReloadfn(inst)
 		local input4 = math.min(input1, input2 - input3)
 
 		if input1 == input4 then inven:SetActiveItem(nil) end
+		if input4 > 0 then stack:Get(input4):Remove() end
 		
-		stack:Get(input4):Remove()
 		finit:AddUses("ammo", input4)
 		giver.SoundEmitter:PlaySound("rifle/reload/reload_1")
 	end
@@ -114,6 +114,10 @@ local function OnReload(inst, giver, item)
 end
 
 local function OnBreak(inst)
+	if inst.components.finiteuses_mauser:GetUses("bayonet") > 0 then
+		inst:onUpdate()
+		return
+	end
 	local prefab = SpawnPrefab("mauser_rifle")
 	local ammo = inst.components.finiteuses_mauser:GetUses("ammo")
 	local rifle = inst.components.finiteuses_mauser:GetUses("rifle")
@@ -159,7 +163,7 @@ local function CanFire(inst, doer, target, pos)
 	return flag
 end
 
-local function OnFire(inst, doer, target, pos)
+local function OnFire(inst, doer, target, pos, action)
 	if not doer.components.combat:CanTarget(target) then
 		target = CloseTarget(doer, pos or target:GetPosition())
 	end
@@ -185,6 +189,7 @@ local function Firefn(inst, doer, target, pos)
 		OnFire(inst, doer, target, pos)
 	elseif doer and doer.components.talker then
 		doer.components.talker:Say("Run out of ammo!")
+		if inst:HasTag("mauser_switch") then inst.components.finiteuses:SetUses(1) end
 	end
 end
 

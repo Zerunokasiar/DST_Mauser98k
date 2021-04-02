@@ -24,6 +24,7 @@ MAUSER_RANGED.fn = function(act)
 
 	if flag then
 		staff:OnFire(act.doer, act.target, pos)
+		staff:onUpdate()
 		return true
 	end
 end

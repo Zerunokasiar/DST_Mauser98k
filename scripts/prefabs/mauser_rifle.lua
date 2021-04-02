@@ -78,14 +78,14 @@ local function OnReloadfn(inst)
 		finit:AddUses("ammo")
 		if finit:GetFull("ammo") then return end
 
-		local input1 = stack and stack:StackSize() or 0
+		local input1 = stack and stack:StackSize() or 1
 		local input2 = finit:GetMaxUses("ammo")
 		local input3 = finit:GetUses("ammo")
 		local input4 = math.min(input1, input2 - input3)
 
 		if input1 == input4 then inven:SetActiveItem(nil) end
+		if input4 > 0 then stack:Get(input4):Remove() end
 		
-		stack:Get(input4):Remove()
 		finit:AddUses("ammo", input4)
 		giver.SoundEmitter:PlaySound("rifle/reload/reload_1")
 	end
@@ -120,6 +120,10 @@ local function OnReload(inst, giver, item)
 end
 
 local function OnBreak(inst)
+	if inst.components.finiteuses_mauser:GetUses("rifle") > 0 then
+		inst:onUpdate()
+		return
+	end
 	local owner = inst.components.inventoryitem.owner
 
 	for i = 1, inst.components.finiteuses_mauser:GetUses("ammo") do
@@ -189,6 +193,7 @@ local function Firefn(inst, doer, target, pos)
 		OnFire(inst, doer, target, pos)
 	elseif doer and doer.components.talker then
 		doer.components.talker:Say("Run out of ammo!")
+		if inst:HasTag("mauser_switch") then inst.components.finiteuses:SetUses(1) end
 	end
 end
 
