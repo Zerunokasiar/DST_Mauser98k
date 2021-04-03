@@ -298,7 +298,7 @@ local function fn()
 	
 	inst:AddComponent("inventoryitem")
 	inst.inventoryitem_default = function(inst)
-		local path = "images/inventoryimages/mauser_rifleb.xml"
+		local path = "images/inventoryimages/mauser_rifle.xml"
 		inst.components.inventoryitem.atlasname = path
 	end
 	inst.inventoryitem_switch = function(inst)

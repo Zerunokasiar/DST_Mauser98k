@@ -35,7 +35,7 @@ local RIFLE_ACTION = State({
 		if not inst.components.combat:CanTarget(target) then
 			if buffaction.pos then
 				target = CloseTarget(inst, buffaction:GetActionPoint())
-			else
+			elseif target ~= nil then
 				target = CloseTarget(inst, target:GetPosition())
 			end
 		end 
