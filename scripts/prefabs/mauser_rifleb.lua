@@ -1,7 +1,9 @@
-PARAMS = MAUSER_PARAMS
+PARAMS = TUNING.MAUSER_PARAMS
 local assets =
 {
     Asset("ANIM","anim/player_actions_speargun.zip"),
+    Asset("ANIM","anim/player_actions_spearjab.zip"),
+    Asset("ANIM","anim/player_mount_actions_speargun.zip"),
 	Asset("ANIM", "anim/mauser_rifleb.zip"),
     Asset("ANIM", "anim/swap_mauser_rifleb_m.zip"),
     Asset("ANIM", "anim/swap_mauser_rifleb_r.zip"),
@@ -171,7 +173,7 @@ local function OnFire(inst, doer, target, pos, action)
     proj:AddComponent("inventoryitem")
 	proj.Transform:SetPosition(doer.Transform:GetWorldPosition())
 	proj.components.inventoryitem.owner = doer
-	proj._effect = SpawnPrefab("lanternlight")
+	proj._effect = SpawnPrefab("lanternlight") or SpawnPrefab("lanternfire")
 	proj._effect.Transform:SetPosition(doer.Transform:GetWorldPosition())
 	proj._effect.Light:Enable(true)
 	proj._effect.Light:SetRadius(1)
@@ -245,8 +247,11 @@ local function fn()
 	inst.AnimState:PlayAnimation("idle")
 	
 	MakeInventoryPhysics(inst)
-	if MakeInventoryFloatable then
-		MakeInventoryFloatable(inst, "med", 0.05, {0.75, 0.4, 0.75})
+
+	if TheSim:GetGameID() == "DST" then
+		if MakeInventoryFloatable then
+			MakeInventoryFloatable(inst, "med", 0.05, {0.75, 0.4, 0.75})
+		end
 	end
 
 	inst:AddTag("sharp")
@@ -338,7 +343,7 @@ local function fn()
 		inst.components.weapon:SetOnProjectileLaunch(nil)
 	end
 	inst.weapon_switch = function(inst)
-		local value = PARAMS.RIFLE_DMG_R * TUNING[PARAMS.RIFLE_R]
+		local value = PARAMS.RIFLE_DMG_R * (TUNING[PARAMS.RIFLE_R] or 120)
 		inst.components.weapon:SetDamage(value)
 		inst.components.weapon:SetRange(PARAMS.RANGE, PARAMS.RANGE * 2)
 		inst.components.weapon:SetProjectile("mauser_bullet")

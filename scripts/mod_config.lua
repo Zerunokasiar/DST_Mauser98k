@@ -1,5 +1,5 @@
-GLOBAL.MAUSER_PARAMS = {}
-PARAMS = GLOBAL.MAUSER_PARAMS
+GLOBAL.TUNING.MAUSER_PARAMS = {}
+PARAMS = GLOBAL.TUNING.MAUSER_PARAMS
 
 PARAMS.DEBUG = GetModConfigData("mauser_debug.2_1_2") or false
 PARAMS.AMMO = GetModConfigData("mauser_ammo_value.2_1_2") or 5

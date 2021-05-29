@@ -1,4 +1,4 @@
-PARAMS = MAUSER_PARAMS
+PARAMS = TUNING.MAUSER_PARAMS
 local assets =
 {
 	 Asset("ANIM", "anim/mauser_bullet.zip"),
@@ -31,7 +31,7 @@ local function fn()
 		if not TheWorld.ismastersim then return inst end
 	end
     inst:AddComponent("weapon")
-	inst.components.weapon:SetDamage(PARAMS.RIFLE_DMG_R * TUNING[PARAMS.RIFLE_R])
+	inst.components.weapon:SetDamage(PARAMS.RIFLE_DMG_R * (TUNING[PARAMS.RIFLE_R] or 120))
 --	inst.components.weapon:SetProjectile("mauser_bullet")
     inst.components.weapon:SetRange(PARAMS.RANGE,PARAMS.RANGE*2)
 

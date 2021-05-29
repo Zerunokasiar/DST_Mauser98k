@@ -21,10 +21,10 @@ Assets =
 }
 
 local env = GLOBAL.getfenv(1)
-local mod_config = GLOBAL.loadfile("scripts/mod_config")
-local new_action = GLOBAL.loadfile("scripts/new_action")
-local new_recipe = GLOBAL.loadfile("scripts/new_recipe")
-local new_stategraph = GLOBAL.loadfile("scripts/new_stategraph")
+local mod_config = GLOBAL.loadfile("scripts/mod_config.lua")
+local new_action = GLOBAL.loadfile("scripts/new_action.lua")
+local new_recipe = GLOBAL.loadfile("scripts/new_recipe.lua")
+local new_stategraph = GLOBAL.loadfile("scripts/new_stategraph.lua")
 
 GLOBAL.setfenv(mod_config, env)
 GLOBAL.setfenv(new_action, env)

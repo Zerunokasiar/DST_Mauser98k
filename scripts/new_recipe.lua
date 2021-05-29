@@ -40,7 +40,28 @@ if PARAMS.DEBUG then
 	tech_gunstock		= {SCIENCE = 0, MAGIC = 0, ANCIENT = 0}
 	tech_rifle			= {SCIENCE = 0, MAGIC = 0, ANCIENT = 0}
 end
-AddRecipe("mauser_ammo",cost_ammo, RECIPETABS.WAR, tech_ammo,nil, nil, nil, 5, nil, "images/inventoryimages/mauser_ammo.xml")
-AddRecipe("mauser_bayonet",cost_bayonet,  RECIPETABS.WAR, tech_bayonet, nil, nil, nil, 1, nil, "images/inventoryimages/mauser_bayonet.xml")
-AddRecipe("mauser_gunstock",cost_gunstock,  RECIPETABS.WAR, tech_gunstock, nil, nil, nil, 1, nil, "images/inventoryimages/mauser_rifle.xml")
-AddRecipe("mauser_rifle",cost_rifle,  RECIPETABS.WAR, tech_rifle, nil, nil, nil, 1, nil, "images/inventoryimages/mauser_rifle.xml")
+
+if GLOBAL.TheSim:GetGameID() == "DST" then
+	AddRecipe("mauser_ammo",cost_ammo, RECIPETABS.WAR, tech_ammo,nil, nil, nil, 5, nil, "images/inventoryimages/mauser_ammo.xml")
+	AddRecipe("mauser_bayonet",cost_bayonet,  RECIPETABS.WAR, tech_bayonet, nil, nil, nil, 1, nil, "images/inventoryimages/mauser_bayonet.xml")
+	AddRecipe("mauser_gunstock",cost_gunstock,  RECIPETABS.WAR, tech_gunstock, nil, nil, nil, 1, nil, "images/inventoryimages/mauser_rifle.xml")
+	AddRecipe("mauser_rifle",cost_rifle,  RECIPETABS.WAR, tech_rifle, nil, nil, nil, 1, nil, "images/inventoryimages/mauser_rifle.xml")
+else
+	local function AddRecipe(_recName, _ingrList, _tab, _techLevel, _recType, _placer, _spacing, _proxyLock, _amount)
+		if GLOBAL.CAPY_DLC and GLOBAL.IsDLCEnabled(GLOBAL.CAPY_DLC) then
+			return GLOBAL.Recipe(_recName, _ingrList , _tab, _techLevel, _recType, _placer, _spacing, _proxyLock, _amount)
+		else
+			return GLOBAL.Recipe(_recName, _ingrList , _tab, _techLevel, _placer, _spacing, _proxyLock, _amount)
+		end
+	end
+
+	local mauser_ammo = AddRecipe("mauser_ammo",cost_ammo, RECIPETABS.WAR, tech_ammo, "common", nil, nil, nil, 5)
+	local mauser_bayonet = AddRecipe("mauser_bayonet",cost_bayonet,  RECIPETABS.WAR, tech_bayonet, "common", nil, nil, nil, 1)
+	local mauser_gunstock = AddRecipe("mauser_gunstock",cost_gunstock,  RECIPETABS.WAR, tech_gunstock, "common", nil, nil, nil, 1)
+	local mauser_rifle = AddRecipe("mauser_rifle",cost_rifle,  RECIPETABS.WAR, tech_rifle, "common", nil, nil, nil, 1)
+
+	mauser_ammo.atlas = "images/inventoryimages/mauser_ammo.xml"
+	mauser_bayonet.atlas = "images/inventoryimages/mauser_bayonet.xml"
+	mauser_gunstock.atlas = "images/inventoryimages/mauser_rifle.xml"
+	mauser_rifle.atlas = "images/inventoryimages/mauser_rifle.xml"
+end

@@ -1,7 +1,8 @@
-PARAMS = MAUSER_PARAMS
+PARAMS = TUNING.MAUSER_PARAMS
 local assets =
 {
     Asset("ANIM","anim/player_actions_speargun.zip"),
+    Asset("ANIM","anim/player_mount_actions_speargun.zip"),
 	Asset("ANIM", "anim/mauser_rifle.zip"),
 	Asset("ANIM", "anim/swap_mauser_rifle_m.zip"),
 	Asset("ANIM", "anim/swap_mauser_rifle_r.zip"),
@@ -95,7 +96,7 @@ local function OnReloadfn(inst)
 		local prefab = SpawnPrefab("mauser_rifleb")
 		local ammo = inst.components.finiteuses_mauser:GetUses("ammo")
 		local rifle = inst.components.finiteuses_mauser:GetUses("rifle")
-		local bayonet = item.components.finiteuses:GetUses()
+		local bayonet = item.components.finiteuses:GetPercent()
 		prefab.components.finiteuses_mauser:SetUses("ammo", ammo)
 		prefab.components.finiteuses_mauser:SetUses("rifle", rifle)
 		prefab.components.finiteuses_mauser:SetPercent("bayonet", bayonet)
@@ -175,7 +176,7 @@ local function OnFire(inst, doer, target, pos)
     proj:AddComponent("inventoryitem")
 	proj.Transform:SetPosition(doer.Transform:GetWorldPosition())
 	proj.components.inventoryitem.owner = doer
-	proj._effect = SpawnPrefab("lanternlight")
+	proj._effect = SpawnPrefab("lanternlight") or SpawnPrefab("lanternfire")
 	proj._effect.Transform:SetPosition(doer.Transform:GetWorldPosition())
 	proj._effect.Light:Enable(true)
 	proj._effect.Light:SetRadius(1)
@@ -247,8 +248,11 @@ local function fn()
 	inst.AnimState:PlayAnimation("idle")
 	
 	MakeInventoryPhysics(inst)
-	if MakeInventoryFloatable then
-		MakeInventoryFloatable(inst, "med", 0.05, {0.75, 0.4, 0.75})
+
+	if TheSim:GetGameID() == "DST" then
+		if MakeInventoryFloatable then
+			MakeInventoryFloatable(inst, "med", 0.05, {0.75, 0.4, 0.75})
+		end
 	end
 	
 	inst:AddTag("mauser_rifle")
@@ -336,7 +340,7 @@ local function fn()
 		inst.components.weapon:SetOnProjectileLaunch(nil)
 	end
 	inst.weapon_switch = function(inst)
-		local value = PARAMS.RIFLE_DMG_R * TUNING[PARAMS.RIFLE_R]
+		local value = PARAMS.RIFLE_DMG_R * (TUNING[PARAMS.RIFLE_R] or 120)
 		inst.components.weapon:SetDamage(value)
 		inst.components.weapon:SetRange(PARAMS.RANGE, PARAMS.RANGE * 2)
 		inst.components.weapon:SetProjectile("mauser_bullet")

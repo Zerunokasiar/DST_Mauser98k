@@ -1,4 +1,4 @@
-PARAMS = MAUSER_PARAMS
+PARAMS = TUNING.MAUSER_PARAMS
 local assets =
 {
 	Asset("ANIM", "anim/mauser_rifle.zip"),
@@ -58,8 +58,11 @@ local function fn()
 	inst.AnimState:PlayAnimation("idle")
 	
 	MakeInventoryPhysics(inst)
-	if MakeInventoryFloatable then
-		MakeInventoryFloatable(inst, "med", 0.05, {0.75, 0.4, 0.75})
+
+	if TheSim:GetGameID() == "DST" then
+		if MakeInventoryFloatable then
+			MakeInventoryFloatable(inst, "med", 0.05, {0.75, 0.4, 0.75})
+		end
 	end
 	
 	if TheSim:GetGameID() == "DST" then
