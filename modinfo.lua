@@ -1,7 +1,7 @@
 name 						= "Mauser Rifle & Bayonet"
-description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.1.9s"
+description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.1.10s"
 author 						= "Zerunokasiar"
-version 					= "2.1.9s"
+version 					= "2.1.10s"
 forumthread 				= ""
 api_version					= 6
 api_version_dst				= 10 
@@ -32,6 +32,16 @@ configuration_options =
 			{description = "Enable", 			data = true},
 		},
         default = false,
+    },
+    {
+		name 	= "mauser_moving_speed.2_1_9",
+        label 	= "Moving Speed of Rifle&Bayonet when Melee Mode",
+        options =
+        {
+			{description = "Disable", 			data = false},
+			{description = "Enable", 			data = true},
+		},
+        default = true,
     },
 	{
 		name 	= "mauser_ammo_value.2_1_2",

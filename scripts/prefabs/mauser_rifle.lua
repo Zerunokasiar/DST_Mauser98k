@@ -277,10 +277,14 @@ local function fn()
 	inst.components.equippable:SetOnEquip(OnEquip)
 	inst.components.equippable:SetOnUnequip(OnUnequip)
 	inst.equippable_default = function(inst)
-		inst.components.equippable.walkspeedmult = 1.0
+		if PARAMS.MOVING_SPEED then
+			inst.components.equippable.walkspeedmult = 1.0
+		end
 	end
 	inst.equippable_switch = function(inst)
-		inst.components.equippable.walkspeedmult = 1.0
+		if PARAMS.MOVING_SPEED then
+			inst.components.equippable.walkspeedmult = 1.0
+		end
 	end
 	inst:equippable_default()
 
