@@ -1,5 +1,5 @@
 name 						= "Mauser Rifle & Bayonet"
-description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.1.8m"
+description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.1.9m"
 author 						= "Zerunokasiar"
 version 					= "2.1.9m"
 forumthread 				= ""
