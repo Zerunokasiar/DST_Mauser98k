@@ -1,7 +1,7 @@
 name 						= "Mauser Rifle & Bayonet"
 description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.1.8m"
 author 						= "Zerunokasiar"
-version 					= "2.1.8m"
+version 					= "2.1.9m"
 forumthread 				= ""
 api_version					= 6
 api_version_dst				= 10 
@@ -176,6 +176,14 @@ configuration_options =
 			{description = "350",	data = 350,	hover = nil},
 			{description = "375",	data = 375,	hover = nil},
 			{description = "400",	data = 400,	hover = "Golden Tool"},
+			{description = "450",	data = 450,	hover = nil},
+			{description = "500",	data = 500,	hover = nil},
+			{description = "550",	data = 550,	hover = nil},
+			{description = "600",	data = 600,	hover = nil},
+			{description = "650",	data = 650,	hover = nil},
+			{description = "700",	data = 700,	hover = nil},
+			{description = "750",	data = 750,	hover = nil},
+			{description = "800",	data = 800,	hover = nil},
 		},
         default = 75,
 	},
@@ -200,8 +208,16 @@ configuration_options =
 			{description = "350",	data = 350,	hover = nil},
 			{description = "375",	data = 375,	hover = nil},
 			{description = "400",	data = 400,	hover = "Golden Tool"},
+			{description = "450",	data = 450,	hover = nil},
+			{description = "500",	data = 500,	hover = nil},
+			{description = "550",	data = 550,	hover = nil},
+			{description = "600",	data = 600,	hover = nil},
+			{description = "650",	data = 650,	hover = nil},
+			{description = "700",	data = 700,	hover = nil},
+			{description = "750",	data = 750,	hover = nil},
+			{description = "800",	data = 800,	hover = nil},
 		},
-        default = 200,
+        default = 100,
 	},
 	{
 		name 	= "mauser_bayonet_1_hp_value.2_1_2",
@@ -224,7 +240,15 @@ configuration_options =
 			{description = "350",	data = 350,	hover = nil},
 			{description = "375",	data = 375,	hover = nil},
 			{description = "400",	data = 400,	hover = "Golden Tool"},
+			{description = "450",	data = 450,	hover = nil},
+			{description = "500",	data = 500,	hover = nil},
+			{description = "550",	data = 550,	hover = nil},
+			{description = "600",	data = 600,	hover = nil},
+			{description = "650",	data = 650,	hover = nil},
+			{description = "700",	data = 700,	hover = nil},
+			{description = "750",	data = 750,	hover = nil},
+			{description = "800",	data = 800,	hover = nil},
 		},
-        default = 100,
+        default = 400,
 	},
 }
