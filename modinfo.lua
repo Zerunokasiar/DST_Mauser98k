@@ -1,7 +1,7 @@
 name 						= "Mauser Rifle & Bayonet"
-description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.1.10t"
+description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.2.1t"
 author 						= "Zerunokasiar"
-version 					= "2.1.10t"
+version 					= "2.2.1t"
 forumthread 				= ""
 api_version					= 6
 api_version_dst				= 10 
@@ -34,14 +34,23 @@ configuration_options =
         default = false,
     },
     {
-		name 	= "mauser_moving_speed.2_1_9",
-        label 	= "Moving Speed of Rifle&Bayonet when Melee Mode",
+		name 	= "mauser_moving_speed_factor.2_2_1",
+        label 	= "Moving Speed Factor of Rifle&Bayonet",
         options =
         {
-			{description = "Disable", 			data = false},
-			{description = "Enable", 			data = true},
+			{description = "x1.00",	data = 1.00, hover = "not changed"},
+			{description = "x1.05",	data = 1.05, hover = "x1.05 melee, x0.95 range"},
+			{description = "x1.10",	data = 1.10, hover = "x1.10 melee, x0.91 range"},
+			{description = "x1.15",	data = 1.15, hover = "x1.15 melee, x0.87 range"},
+			{description = "x1.20",	data = 1.20, hover = "x1.20 melee, x0.83 range"},
+			{description = "x1.25",	data = 1.25, hover = "x1.25 melee, x0.80 range"},
+			{description = "x1.30",	data = 1.30, hover = "x1.30 melee, x0.77 range"},
+			{description = "x1.35",	data = 1.35, hover = "x1.35 melee, x0.74 range"},
+			{description = "x1.40",	data = 1.40, hover = "x1.40 melee, x0.71 range"},
+			{description = "x1.45",	data = 1.45, hover = "x1.45 melee, x0.69 range"},
+			{description = "x1.50",	data = 1.50, hover = "x1.50 melee, x0.67 range"},
 		},
-        default = true,
+        default = 1.25,
     },
 	{
 		name 	= "mauser_ammo_value.2_1_2",
