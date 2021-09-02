@@ -278,8 +278,10 @@ local function fn()
 		end
 	end
 	inst.equippable_switch = function(inst)
-		if PARAMS.MOVING_SPEED then
+		if PARAMS.MOVING_DEBUFF and PARAMS.MOVING_SPEED then
 			inst.components.equippable.walkspeedmult = 1.0 / PARAMS.MOVING_SPEED
+		else
+			inst.components.equippable.walkspeedmult = 1.0
 		end
 	end
 	inst:equippable_default()
