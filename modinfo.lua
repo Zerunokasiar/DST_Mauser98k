@@ -1,7 +1,7 @@
 name 						= "Mauser Rifle & Bayonet"
 description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.2.1t"
 author 						= "Zerunokasiar"
-version 					= "2.2.1t"
+version 					= "2.2.0t"
 forumthread 				= ""
 api_version					= 6
 api_version_dst				= 10 
@@ -51,6 +51,16 @@ configuration_options =
 			{description = "x1.50",	data = 1.50, hover = "x1.50 melee, x0.67 range"},
 		},
         default = 1.25,
+    },
+    {
+		name 	= "mauser_ranged_mode_debuff.2_2_1",
+        label 	= "Ranged Mode Debuff of Rifle&Bayonet",
+        options =
+        {
+			{description = "Disable", 			data = false},
+			{description = "Enable", 			data = true},
+		},
+        default = true,
     },
 	{
 		name 	= "mauser_ammo_value.2_1_2",

@@ -3,6 +3,7 @@ PARAMS = GLOBAL.MAUSER_PARAMS
 
 PARAMS.DEBUG = GetModConfigData("mauser_debug.2_1_2") or false
 PARAMS.MOVING_SPEED = GetModConfigData("mauser_moving_speed_factor.2_2_1") or 1.25
+PARAMS.MOVING_DEBUFF = GetModConfigData("mauser_ranged_mode_debuff.2_2_1") or true
 PARAMS.AMMO = GetModConfigData("mauser_ammo_value.2_1_2") or 5
 PARAMS.AUTOAIM = GetModConfigData("mauser_autoaim_value.2_1_2") or 4
 PARAMS.RANGE = GetModConfigData("mauser_range_factor.2_1_2") or 15
