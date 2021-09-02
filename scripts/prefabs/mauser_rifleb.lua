@@ -171,7 +171,7 @@ local function OnFire(inst, doer, target, pos, action)
     proj:AddComponent("inventoryitem")
 	proj.Transform:SetPosition(doer.Transform:GetWorldPosition())
 	proj.components.inventoryitem.owner = doer
-	proj._effect = SpawnPrefab("lanternlight")
+	proj._effect = SpawnPrefab("lanternlight") or SpawnPrefab("lanternfire")
 	proj._effect.Transform:SetPosition(doer.Transform:GetWorldPosition())
 	proj._effect.Light:Enable(true)
 	proj._effect.Light:SetRadius(1)
@@ -273,10 +273,14 @@ local function fn()
 	inst.components.equippable:SetOnEquip(OnEquip)
 	inst.components.equippable:SetOnUnequip(OnUnequip)
 	inst.equippable_default = function(inst)
-		inst.components.equippable.walkspeedmult = 1.2
+		if PARAMS.MOVING_SPEED then
+			inst.components.equippable.walkspeedmult = 1.2
+		end
 	end
 	inst.equippable_switch = function(inst)
-		inst.components.equippable.walkspeedmult = 1.0
+		if PARAMS.MOVING_SPEED then
+			inst.components.equippable.walkspeedmult = 1.0
+		end
 	end
 	inst:equippable_default()
 

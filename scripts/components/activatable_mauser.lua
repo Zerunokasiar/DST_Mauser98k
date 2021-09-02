@@ -20,4 +20,11 @@ function Activatable_Mauser:DoActivate(inst, doer)
 	return self.DoActivateFn and self.DoActivateFn(inst, doer)
 end
 
+-- ds only
+function Activatable_Mauser:CollectInventoryActions(doer, actions)
+	if doer.components.inventory and doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
+		table.insert(actions, ACTIONS.MAUSER_RELOAD)
+	end
+end
+
 return Activatable_Mauser

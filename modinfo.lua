@@ -1,7 +1,7 @@
 name 						= "Mauser Rifle & Bayonet"
-description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.1.9m"
+description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.1.10t"
 author 						= "Zerunokasiar"
-version 					= "2.1.9m"
+version 					= "2.1.10t"
 forumthread 				= ""
 api_version					= 6
 api_version_dst				= 10 
@@ -18,7 +18,7 @@ icon 						= "modicon.tex"
 
 local RIFLE_R = "Max Fire per Second"
 local RIFLE_M = "Spear"
-local BAYONET_2 = "Tentacle Spike"
+local BAYONET_2 = "Dark Sword"
 local BAYONET_1 = "Hammer"
 
 configuration_options =
@@ -32,6 +32,16 @@ configuration_options =
 			{description = "Enable", 			data = true},
 		},
         default = false,
+    },
+    {
+		name 	= "mauser_moving_speed.2_1_9",
+        label 	= "Moving Speed of Rifle&Bayonet when Melee Mode",
+        options =
+        {
+			{description = "Disable", 			data = false},
+			{description = "Enable", 			data = true},
+		},
+        default = true,
     },
 	{
 		name 	= "mauser_ammo_value.2_1_2",
@@ -188,7 +198,7 @@ configuration_options =
         default = 75,
 	},
 	{
-		name 	= "mauser_bayonet_2_hp_value.2_1_2",
+		name 	= "mauser_bayonet_2_hp_value.2_1_9",
 		label 	= "Equipped Bayonet Durability Value",
 		options =
 		{
@@ -220,7 +230,7 @@ configuration_options =
         default = 100,
 	},
 	{
-		name 	= "mauser_bayonet_1_hp_value.2_1_2",
+		name 	= "mauser_bayonet_1_hp_value.2_1_9",
 		label 	= "Standalone Bayonet Durability Value",
 		options =
 		{
