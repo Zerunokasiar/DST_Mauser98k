@@ -2,6 +2,7 @@ Action = GLOBAL.Action
 EQUIPSLOTS = GLOBAL.EQUIPSLOTS
 STRINGS = GLOBAL.STRINGS
 ACTIONS = GLOBAL.ACTIONS
+TheSim = TheSim or GLOBAL.TheSim
 
 local MAUSER_RANGED = Action({priority=2, rmb=true, distance=PARAMS.RANGE, mount_valid=true})
 MAUSER_RANGED.str = "Mauser Ranged"
@@ -50,7 +51,7 @@ local function point_weapon(inst, doer, pos, actions, right)
 	if not inst:HasTag("mauser_rifle") then return end
 --	if inst:HasTag("mauser_switch") then return end
 	local x, y, z = pos:Get()
-	local ents = GLOBAL.TheSim:FindEntities(x, y, z, PARAMS.AUTOAIM)
+	local ents = TheSim:FindEntities(x, y, z, PARAMS.AUTOAIM)
 
 	for k,v in pairs(ents) do
 		local flag = doer.replica.combat

@@ -3,6 +3,7 @@ FRAMES = GLOBAL.FRAMES
 TimeEvent = GLOBAL.TimeEvent
 EventHandler = GLOBAL.EventHandler
 ActionHandler = GLOBAL.ActionHandler
+TheSim = TheSim or GLOBAL.TheSim
 
 local function CloseTarget(doer, pos)
 	local x, y, z = pos:Get()
