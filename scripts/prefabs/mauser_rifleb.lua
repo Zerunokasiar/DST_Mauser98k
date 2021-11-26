@@ -56,6 +56,10 @@ local function CanReloadfn(inst)
 			inst.components.finiteuses_mauser:SetPercent("bayonet", 1)
 			item.components.finiteuses:SetPercent(input1 + input2 - 1)
 			item.components.finiteuses:SetUses(math.ceil(item.components.finiteuses:GetUses()))
+			
+			if not inst:HasTag("mauser_switch") then
+				inst:finiteuses_default()
+			end
 		end
 		return not inst.components.finiteuses_mauser:GetFull("bayonet")
 	end
@@ -73,6 +77,7 @@ local function OnReloadfn(inst)
 		local input1 = inst.components.finiteuses_mauser:GetPercent("rifle")
 		local input2 = item.components.finiteuses:GetPercent()
 		inst.components.finiteuses_mauser:SetPercent("rifle", input1 + input2)
+
 		local value = math.ceil(inst.components.finiteuses_mauser:GetUses("rifle"))
 		inst.components.finiteuses_mauser:SetUses("rifle", value)
 	end
@@ -95,6 +100,10 @@ local function OnReloadfn(inst)
 		if input4 > 0 then stack:Get(input4):Remove() end
 		
 		finit:AddUses("ammo", input4)
+		
+		if inst:HasTag("mauser_switch") then
+			inst:finiteuses_switch()
+		end
 		giver.SoundEmitter:PlaySound("rifle/reload/reload_1")
 	end
 	
@@ -102,8 +111,13 @@ local function OnReloadfn(inst)
 		local input1 = inst.components.finiteuses_mauser:GetPercent("bayonet")
 		local input2 = item.components.finiteuses:GetPercent()
 		inst.components.finiteuses_mauser:SetPercent("bayonet", input1 + input2)
+
 		local value = math.ceil(inst.components.finiteuses_mauser:GetUses("bayonet"))
 		inst.components.finiteuses_mauser:SetUses("bayonet", value)
+		
+		if not inst:HasTag("mauser_switch") then
+			inst:finiteuses_default()
+		end
 	end
 end
 
