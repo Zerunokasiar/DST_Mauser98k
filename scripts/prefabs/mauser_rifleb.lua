@@ -16,10 +16,18 @@ local prefabs =
 	"impact",
 }
 
+local function OnAnimSet(inst, owner)
+	owner.AnimState:OverrideSymbol("swap_object", inst.AnimSet, "swap_rifleb")
+end
+
+local function OnAnimReset(inst, owner)
+	owner.AnimState:OverrideSymbol("swap_object", inst.AnimReset, "swap_rifleb")
+end
+
 local function OnEquip(inst, owner)
-	owner.AnimState:OverrideSymbol("swap_object", "swap_mauser_rifleb_m", "swap_rifleb")
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
+	OnAnimReset(inst, owner)
 	inst:OnDefault()
 end
 
@@ -243,10 +251,16 @@ local function OnChange(inst)
 	flag = flag or inst.components.finiteuses_mauser:GetUses("ammo") == 0
 
 	local owner = inst.components.inventoryitem.owner
-	owner = owner and owner.components.inventory
-	owner:Equip(prefab)
+	local slot = owner and owner.components.inventory
+	slot:Equip(prefab)
 
-	if flag then OnDefault(prefab) else OnSwitch(prefab) end
+	if flag then
+		OnAnimReset(inst, owner)
+		OnDefault(prefab)
+	else
+		OnAnimSet(inst, owner)
+		OnSwitch(prefab)
+	end
 	inst:Remove()
 end
 
@@ -352,7 +366,7 @@ local function fn()
 	inst.weapon_default = function(inst)
 		local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
 		inst.components.weapon:SetDamage(value)
-		inst.components.weapon:SetRange(1.5, 1.5)
+		inst.components.weapon:SetRange(1.7, 1.7)
 		inst.components.weapon:SetProjectile(nil)
 		inst.components.weapon:SetOnAttack(OnHit)
 		inst.components.weapon:SetOnProjectileLaunch(nil)

@@ -16,11 +16,24 @@ local prefabs =
 	"impact",
 }
 
+local function OnAnimSet(inst, owner)
+	owner.AnimState:OverrideSymbol("swap_object", inst.AnimSet, "swap_rifle")
+end
+
+local function OnAnimReset(inst, owner)
+	owner.AnimState:OverrideSymbol("swap_object", inst.AnimReset, "swap_rifle")
+end
+
 local function OnEquip(inst, owner)
-	owner.AnimState:OverrideSymbol("swap_object", "swap_mauser_rifle_m", "swap_rifle")
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
-	inst:OnDefault()
+	if inst.components.finiteuses_mauser:GetUses("ammo") > 0 then
+		OnAnimSet(inst, owner)
+		inst:OnSwitch()
+	else
+		OnAnimReset(inst, owner)
+		inst:OnDefault()
+	end
 end
 
 local function OnUnequip(inst, owner)
@@ -244,10 +257,16 @@ local function OnChange(inst, flag)
 	flag = flag or inst.components.finiteuses_mauser:GetUses("ammo") == 0
 	
 	local owner = inst.components.inventoryitem.owner
-	owner = owner and owner.components.inventory
-	owner:Equip(prefab)
+	local slot = owner and owner.components.inventory
+	slot:Equip(prefab)
 
-	if flag then OnDefault(prefab) else OnSwitch(prefab) end
+	if flag then
+		OnAnimReset(inst, owner)
+		OnDefault(prefab)
+	else
+		OnAnimSet(inst, owner)
+		OnSwitch(prefab)
+	end
 	inst:Remove()
 end
 
@@ -270,6 +289,7 @@ local function fn()
 	inst.AnimReset = "swap_mauser_rifle_m"
 	inst.AnimSet = "swap_mauser_rifle_r"
 	inst.OnDefault = OnDefault
+	inst.OnSwitch = OnSwitch
 	inst.CanFire = CanFire
 	inst.OnFire = OnFire
 
@@ -286,10 +306,10 @@ local function fn()
 	inst.components.equippable:SetOnEquip(OnEquip)
 	inst.components.equippable:SetOnUnequip(OnUnequip)
 	inst.equippable_default = function(inst)
-		inst.components.equippable.walkspeedmult = 1.0
+			inst.components.equippable.walkspeedmult = 1.0
 	end
 	inst.equippable_switch = function(inst)
-		inst.components.equippable.walkspeedmult = 1.0
+			inst.components.equippable.walkspeedmult = 1.0
 	end
 	inst:equippable_default()
 
@@ -343,7 +363,7 @@ local function fn()
 	inst.weapon_default = function(inst)
 		local value = PARAMS.RIFLE_DMG_M * TUNING[PARAMS.RIFLE_M]
 		inst.components.weapon:SetDamage(value)
-		inst.components.weapon:SetRange(0, 0)
+		inst.components.weapon:SetRange(1.2, 1.2)
 		inst.components.weapon:SetProjectile(nil)
 		inst.components.weapon:SetOnAttack(OnHit)
 		inst.components.weapon:SetOnProjectileLaunch(nil)

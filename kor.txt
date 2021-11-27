@@ -1,0 +1,133 @@
+Private Customized Version (BugFix & Remake)
+Original link : http://steamcommunity.com/sharedfiles/filedetails/?id=847687993
+DS link : https://steamcommunity.com/sharedfiles/filedetails/?id=1506383724
+DST link(release) : https://steamcommunity.com/sharedfiles/filedetails/?id=955048205
+DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=1850492645
+
+[h1]1. 아이템 종류[/h1]
+
+[table]
+[tr][td]마우저 탄[/td][td]mauser_ammo[/td][/tr]
+[tr][td]마우저 총검[/td][td]mauser_bayonet[/td][/tr]
+[tr][td]총기 외형[/td][td]mauser_gunstock[/td][/tr]
+[tr][td]마우저 소총[/td][td]mauser_rifle[/td][/tr]
+[tr][td]착검 소총[/td][td]mauser_rifleb[/td][/tr]
+[/table]
+
+[h1]2. 성능[/h1]
+
+[b]마우저 탄[/b]
+[table]
+[tr][td]스택크기[/td][td]소형 스택 (40)[/td][/tr]
+[/table]
+
+[b]마우저 총검[/b]
+[table]
+[tr][td]공격력[/td][td]34[/td][/tr]
+[tr][td]사거리[/td][td]0[/td][/tr]
+[tr][td]내구도[/td][td]400[/td][/tr]
+[tr][td]기동력[/td][td]100%[/td][/tr]
+[/table]
+
+[b]총기 외형[/b]
+[table]
+[tr][td]공격력[/td][td]51[/td][/tr]
+[tr][td]사거리[/td][td]1.3[/td][/tr]
+[tr][td]내구도[/td][td]25[/td][/tr]
+[tr][td]기동력[/td][td]100%[/td][/tr]
+[/table]
+
+[b]마우저 소총[/b]
+[table]
+[tr][td]근거리 공격력[/td][td]51[/td][td]원거리 공격력[/td][td]120[/td][/tr]
+[tr][td]근거리 사거리[/td][td]1.3[/td][td]원거리 사거리[/td][td]15[/td][/tr]
+[tr][td]내구도[/td][td]25[/td][/tr]
+[tr][td]기동력[/td][td]100%[/td][/tr]
+[tr][td]최대탄창[/td][td]5[/td][/tr]
+[/table]
+
+[b]착검 소총[/b]
+[table]
+[tr][td]근거리 공격력[/td][td]68[/td][td]원거리 공격력[/td][td]120[/td][/tr]
+[tr][td]근거리 사거리[/td][td]1.7[/td][td]원거리 사거리[/td][td]15[/td][/tr]
+[tr][td]내구도[/td][td]100[/td][/tr]
+[tr][td]기동력 (근거리)[/td][td]125%[/td][td]기동력 (원거리)[/td][td]80%[/td][/tr]
+[tr][td]최대탄창[/td][td]5[/td][/tr]
+[/table]
+
+[h1]2. 제조법[/h1]
+
+[b]마우저 탄[/b]
+[table]
+[tr][td]금[/td][td]1[/td][td]화약[/td][td]1[/td][td]종이[/td][td]1[/td][/tr]
+[tr][td]마우저 탄[/td][td]5[/td][/tr]
+[/table]
+
+[b]마우저 총검[/b]
+[table]
+[tr][td]대리석[/td][td]1[/td][td]밧줄[/td][td]1[/td][td]가지[/td][td]1[/td][/tr]
+[tr][td]마우저 총검[/td][td]1[/td][/tr]
+[/table]
+
+[b]총기 외형[/b]
+[table]
+[tr][td]판자[/td][td]5[/td][/tr]
+[tr][td]총기 외형[/td][td]1[/td][/tr]
+[/table]
+
+[b]마우저 소총[/b]
+[table]
+[tr][td]금[/td][td]10[/td][td]부품[/td][td]2[/td][td]총기 외형[/td][td]1[/td][/tr]
+[tr][td]마우저 소총[/td][td]1[/td][/tr]
+[/table]
+
+[h1]3. 특징[/h1]
+
+[b]마우저 총검[/b]
+[table]
+[tr][td]
+마우저 총검은 그 자체로는 제 성능을 낼 수 없습니다.
+마우저 총검은 또 다른 마우저 총검으로 수리가 가능합니다.
+[/td][/tr]
+[/table]
+
+[b]총기 외형[/b]
+[table]
+[tr][td]
+총기 외형은 원거리 공격이 불가능합니다.
+창보다 효과적인 위력과 사거리를 가졌지만 내구도가 약합니다.
+총기 외형은 또 다른 총기 외형으로 수리가 가능합니다.
+[/td][/tr]
+[/table]
+
+[b]마우저 소총[/b]
+[table]
+[tr][td]
+총기를 클릭하여 근거리/원거리 모드를 전환할 수 있습니다.
+원거리 모드 상태에서 마우스 근처에 가까운 대상이 존재할 경우 "Fire!" 표시가 나타납니다.
+"Fire!" 표시가 나타나면 마우스 근처의 가까운 대상을 사격할 수 있습니다. (자동조준시스템)
+단, 자동조준의 경우 사거리가 일반사격보다 조금 짧습니다.
+총기에 탄약을 제공할 경우 한번에 최대로 장전됩니다.
+마우저 소총은 총기 외형으로 수리가 가능합니다.
+[/td][/tr]
+[/table]
+
+[b]착검 소총[/b]
+[table]
+[tr][td]
+작동원리는 마우저 소총과 동일합니다.
+마우저 소총에 마우저 총검을 제공할 경우 착검 소총이 됩니다.
+근거리 모드에서도 자동조준이 가능합니다.
+착검 소총은 마우저 총검으로 수리가 가능합니다.
+착검 소총이 부셔지면 마우저 소총으로 되돌아갑니다.
+[/td][/tr]
+[/table]
+
+[b]마우저 탄[/b]
+[table]
+[tr][td]
+단순한 소총탄약입니다.
+그러나 소총으로 던져넣지 않아도 됩니다.
+오른쪽 클릭시 장비중인 소총의 탄약을 1발 충전합니다.
+[/td][/tr]
+[/table]

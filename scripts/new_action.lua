@@ -4,7 +4,7 @@ STRINGS = GLOBAL.STRINGS
 ACTIONS = GLOBAL.ACTIONS
 TheSim = TheSim or GLOBAL.TheSim
 
-local MAUSER_RANGED = Action({priority=2, rmb=true, distance=PARAMS.RANGE, mount_valid=true})
+local MAUSER_RANGED = Action({priority=2, rmb=true, distance=PARAMS.RANGE * PARAMS.AUTORANGE, mount_valid=true})
 MAUSER_RANGED.str = "Mauser Ranged"
 MAUSER_RANGED.id = "MAUSER_RANGED"
 MAUSER_RANGED.fn = function(act)
@@ -48,8 +48,9 @@ STRINGS.ACTIONS.MAUSER_RELOAD = {GENERIC = "Reload"}
 
 local function point_weapon(inst, doer, pos, actions, right)
 	if not right then return end
-	if not inst:HasTag("mauser_rifle") then return end
---	if inst:HasTag("mauser_switch") then return end
+	if not inst:HasTag("mauser_switch") then
+		if not inst:HasTag("mauser_bayonet") then return end
+	end
 	local x, y, z = pos:Get()
 	local ents = TheSim:FindEntities(x, y, z, PARAMS.AUTOAIM)
 
@@ -65,9 +66,9 @@ end
 
 local function equipped_weapon(inst, doer, target, actions, right)
 	if not right then return end
-	if not inst:HasTag("mauser_rifle") then return end
---	if inst:HasTag("mauser_switch") then return end
-
+	if not inst:HasTag("mauser_switch") then
+		if not inst:HasTag("mauser_bayonet") then return end
+	end
 	local flag = doer.replica.combat
 	flag = flag and flag:CanTarget(target)
 	if flag then

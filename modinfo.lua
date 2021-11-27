@@ -1,7 +1,7 @@
 name 						= "Mauser Rifle & Bayonet"
-description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.2.3t"
+description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n2.3.0t"
 author 						= "Zerunokasiar"
-version 					= "2.2.3t"
+version 					= "2.3.0t"
 forumthread 				= ""
 api_version					= 6
 api_version_dst				= 10 
@@ -17,15 +17,15 @@ icon_atlas 					= "modicon.xml"
 icon 						= "modicon.tex"
 
 local RIFLE_R = "Max Fire per Second"
-local RIFLE_M = "Spear"
+local RIFLE_M = "Spike"
 local BAYONET_2 = "Dark Sword"
-local BAYONET_1 = "Hammer"
+local BAYONET_1 = "Spear"
 
 configuration_options =
 {
     {
 		name 	= "mauser_debug.2_1_2",
-        label 	= "Test Mode",
+        label 	= "Test Mode (Just Simple Recipe)",
         options =
         {
 			{description = "Disable", 			data = false},
@@ -33,6 +33,26 @@ configuration_options =
 		},
         default = false,
     },
+	{
+		name 	= "mauser_bayonet_recipe_item.2_3_0",
+		label 	= "Mauser Bayonet Recipe Item",
+		options =
+		{
+			{description = "marble",	data = "marble",			hover = "marble + rope + twigs"},
+			{description = "goldnugget",	data = "goldnugget",	hover = "goldnugget + rope + twigs"},
+		},
+        default = "marble",
+	},
+	{
+		name 	= "mauser_bayonet_recipe_ammount.2_3_0",
+		label 	= "Mauser Bayonet Recipe Ammount",
+		options =
+		{
+			{description = "item x2",	data = 2,	hover = "goldnugget recommend"},
+			{description = "item x1",	data = 1,	hover = "marble recommend"},
+		},
+        default = 1,
+	},
     {
 		name 	= "mauser_moving_speed_factor.2_2_1",
         label 	= "Moving Speed Factor of Rifle&Bayonet",
@@ -57,8 +77,8 @@ configuration_options =
         label 	= "Ranged Mode Debuff of Rifle&Bayonet",
         options =
         {
-			{description = "Disable", 			data = false},
-			{description = "Enable", 			data = true},
+			{description = "Disable",	data = false},
+			{description = "Enable",	data = true},
 		},
         default = true,
     },
@@ -117,6 +137,25 @@ configuration_options =
         default = 15,
 	},
 	{
+		name 	= "mauser_Auto range_factor.2_3_0",
+		label 	= "Mauser Auto Range Factor",
+		options =
+		{
+			{description = "x1.00",	data = 1.00,	hover = "Max Range"},
+			{description = "x0.95",	data = 0.95,	hover = nil},
+			{description = "x0.91",	data = 0.91,	hover = nil},
+			{description = "x0.87",	data = 0.87,	hover = nil},
+			{description = "x0.83",	data = 0.83,	hover = nil},
+			{description = "x0.80",	data = 0.80,	hover = "default"},
+			{description = "x0.77",	data = 0.77,	hover = nil},
+			{description = "x0.74",	data = 0.74,	hover = nil},
+			{description = "x0.71",	data = 0.71,	hover = nil},
+			{description = "x0.69",	data = 0.69,	hover = nil},
+			{description = "x0.67",	data = 0.67,	hover = nil},
+		},
+        default = 0.8,
+	},
+	{
 		name 	= "mauser_rifle_2_dmg_factor.2_1_2",
 		label 	= "Mauser Ranged Damage Factor",
 		options =
@@ -134,14 +173,14 @@ configuration_options =
         default = 1.00,
 	},
 	{
-		name 	= "mauser_rifle_1_dmg_factor.2_1_2",
+		name 	= "mauser_rifle_1_dmg_factor.2_3_0",
 		label 	= "Mauser Melee Damage Factor",
 		options =
 		{
 			{description = "x0.25",	data = 0.25,	hover = RIFLE_M.."  25% Damage"},
 			{description = "x0.50",	data = 0.50,	hover = RIFLE_M.."  50% Damage"},
 			{description = "x0.75",	data = 0.75,	hover = RIFLE_M.."  75% Damage"},
-			{description = "x1.00",	data = 1.00,	hover = RIFLE_M.." 100% Damage (34)"},
+			{description = "x1.00",	data = 1.00,	hover = RIFLE_M.." 100% Damage (51)"},
 			{description = "x1.25",	data = 1.25,	hover = RIFLE_M.." 125% Damage"},
 			{description = "x1.50",	data = 1.50,	hover = RIFLE_M.." 150% Damage"},
 			{description = "x1.75", data = 1.75,	hover = RIFLE_M.." 175% Damage"},
@@ -168,14 +207,14 @@ configuration_options =
         default = 1.00,
 	},
 	{
-		name 	= "mauser_bayonet_1_dmg_factor.2_1_2",
+		name 	= "mauser_bayonet_1_dmg_factor.2_3_0",
 		label 	= "Standalone Bayonet Damage Factor",
 		options =
 		{
 			{description = "x0.25",	data = 0.25,	hover = BAYONET_1.."  25% Damage"},
 			{description = "x0.50",	data = 0.50,	hover = BAYONET_1.."  50% Damage"},
 			{description = "x0.75",	data = 0.75,	hover = BAYONET_1.."  75% Damage"},
-			{description = "x1.00",	data = 1.00,	hover = BAYONET_1.." 100% Damage (17)"},
+			{description = "x1.00",	data = 1.00,	hover = BAYONET_1.." 100% Damage (34)"},
 			{description = "x1.25",	data = 1.25,	hover = BAYONET_1.." 125% Damage"},
 			{description = "x1.50",	data = 1.50,	hover = BAYONET_1.." 150% Damage"},
 			{description = "x1.75", data = 1.75,	hover = BAYONET_1.." 175% Damage"},
@@ -185,7 +224,7 @@ configuration_options =
         default = 1.00,
 	},
 	{
-		name 	= "mauser_rifle_hp_value.2_1_2",
+		name 	= "mauser_rifle_hp_value.2_3_0",
 		label 	= "Mauser Durability Value",
 		options =
 		{
@@ -214,7 +253,7 @@ configuration_options =
 			{description = "750",	data = 750,	hover = nil},
 			{description = "800",	data = 800,	hover = nil},
 		},
-        default = 75,
+        default = 25,
 	},
 	{
 		name 	= "mauser_bayonet_2_hp_value.2_1_9",

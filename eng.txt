@@ -1,0 +1,133 @@
+Private Customized Version (BugFix & Remake)
+Original link : http://steamcommunity.com/sharedfiles/filedetails/?id=847687993
+DS link : https://steamcommunity.com/sharedfiles/filedetails/?id=1506383724
+DST link(release) : https://steamcommunity.com/sharedfiles/filedetails/?id=955048205
+DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=1850492645
+
+[h1]1. Item List[/h1]
+
+[table]
+[tr][td]Mauser Ammo[/td][td]mauser_ammo[/td][/tr]
+[tr][td]Mauser Bayonet[/td][td]mauser_bayonet[/td][/tr]
+[tr][td]Dummy Rifle[/td][td]mauser_gunstock[/td][/tr]
+[tr][td]Mauser Rifle[/td][td]mauser_rifle[/td][/tr]
+[tr][td]Rifle with Bayonet[/td][td]mauser_rifleb[/td][/tr]
+[/table]
+
+[h1]2. Stats[/h1]
+
+[b]Mauser Ammo[/b]
+[table]
+[tr][td]Stack Size[/td][td]Small Stack (40)[/td][/tr]
+[/table]
+
+[b]Mauser Bayonet[/b]
+[table]
+[tr][td]Attack[/td][td]34[/td][/tr]
+[tr][td]Range[/td][td]0[/td][/tr]
+[tr][td]Durability[/td][td]400[/td][/tr]
+[tr][td]Mobility[/td][td]100%[/td][/tr]
+[/table]
+
+[b]Dummy Rifle[/b]
+[table]
+[tr][td]Attack[/td][td]51[/td][/tr]
+[tr][td]Range[/td][td]1.3[/td][/tr]
+[tr][td]Durability[/td][td]25[/td][/tr]
+[tr][td]Mobility[/td][td]100%[/td][/tr]
+[/table]
+
+[b]Mauser Rifle[/b]
+[table]
+[tr][td]Melee Attack[/td][td]51[/td][td]Ranged Attack[/td][td]120[/td][/tr]
+[tr][td]Hit Range[/td][td]1.3[/td][td]Fire Range[/td][td]15[/td][/tr]
+[tr][td]Durability[/td][td]25[/td][/tr]
+[tr][td]Mobility[/td][td]100%[/td][/tr]
+[tr][td]Maximum Clip[/td][td]5[/td][/tr]
+[/table]
+
+[b]Rifle with Bayonet[/b]
+[table]
+[tr][td]Melee Attack[/td][td]68[/td][td]Ranged Attack[/td][td]120[/td][/tr]
+[tr][td]Hit Range[/td][td]1.7[/td][td]Fire Range[/td][td]15[/td][/tr]
+[tr][td]Durability[/td][td]100[/td][/tr]
+[tr][td]Mobility (Melee)[/td][td]125%[/td[td]Mobility (Ranged)[/td][td]80%[/td]][/tr]
+[tr][td]Maximum Clip[/td][td]5[/td][/tr]
+[/table]
+
+[h1]2. Recipes[/h1]
+
+[b]Mauser Ammo[/b]
+[table]
+[tr][td]Gold Nugget[/td][td]1[/td][td]Gunpowder[/td][td]1[/td][td]Papyrus[/td][td]1[/td][/tr]
+[tr][td]Mauser Ammo[/td][td]5[/td][/tr]
+[/table]
+
+[b]Mauser Bayonet[/b]
+[table]
+[tr][td]Marble[/td][td]1[/td][td]Rope[/td][td]1[/td][td]Twigs[/td][td]1[/td][/tr]
+[tr][td]Mauser Bayonet[/td][td]1[/td][/tr]
+[/table]
+
+[b]Dummy Rifle[/b]
+[table]
+[tr][td]Boards[/td][td]5[/td][/tr]
+[tr][td]Dummy Rifle[/td][td]1[/td][/tr]
+[/table]
+
+[b]Mauser Rifle[/b]
+[table]
+[tr][td]Gold Nugget[/td][td]10[/td][td]Gears[/td][td]2[/td][td]Dummy Rifle[/td][td]1[/td][/tr]
+[tr][td]Mauser Rifle[/td][td]1[/td][/tr]
+[/table]
+
+[h1]3. Features[/h1]
+
+[b]Mauser Bayonet[/b]
+[table]
+[tr][td]
+Mauser Bayonet is not effective itself.
+Mauser Bayonet is able to repair with other Mauser Bayonet.
+[/td][/tr]
+[/table]
+
+[b]Dummy Rifle[/b]
+[table]
+[tr][td]
+Dummy Rifle is not able to ranged attack.
+Effective damage and range than spear, but weak durability. 
+Dummy Rifle is able to repair with other Dummy Rifle.
+[/td][/tr]
+[/table]
+
+[b]Mauser Rifle[/b]
+[table]
+[tr][td]
+Melee/Ranged Mode is translated when rifle is click with right button.
+If target is exist near mouse when Ranged Mode, "Fire!" is visible.
+If "Fire!" is visible, it is possible to ranged attack without aim. (Auto-Aim System)
+But Auto-Aim case, range is little shorter than normal ranged attack.
+If you give bullets to Mauser Rifle, Mauser Rifle can fill full with bullets at once.
+Mauser Rifle is able to repair with Dummy Rifle.
+[/td][/tr]
+[/table]
+
+[b]Rifle with Bayonet[/b]
+[table]
+[tr][td]
+The working principle is the same as the Mauser Rifle.
+If you give Mauser Bayonet to Mauser Rifle, it becomes Rifle with Bayonet.
+It also able Auto-Aim when Melee Mode.
+Rifle with Bayonet is able to repair with Mauser Bayonet.
+Rifle with Bayonet when broken, it return Rifle.
+[/td][/tr]
+[/table]
+
+[b]Mauser Ammo[/b]
+[table]
+[tr][td]
+It is just a ammo for rifle.
+But It is not need to drag&drop to Rifle.
+When right click to Mauser Ammo, equipped rifle is recharge 1 ammo.
+[/td][/tr]
+[/table]
