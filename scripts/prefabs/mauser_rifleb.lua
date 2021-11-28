@@ -366,7 +366,7 @@ local function fn()
 	inst.weapon_default = function(inst)
 		local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
 		inst.components.weapon:SetDamage(value)
-		inst.components.weapon:SetRange(1.7, 1.7)
+		inst.components.weapon:SetRange(1.75, 1.75)
 		inst.components.weapon:SetProjectile(nil)
 		inst.components.weapon:SetOnAttack(OnHit)
 		inst.components.weapon:SetOnProjectileLaunch(nil)

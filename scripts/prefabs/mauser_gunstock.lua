@@ -92,7 +92,7 @@ local function fn()
 
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage(PARAMS.RIFLE_DMG_M * TUNING[PARAMS.RIFLE_M])
-	inst.components.weapon:SetRange(1.2, 1.2)
+	inst.components.weapon:SetRange(1, 1)
 
 	return inst
 end

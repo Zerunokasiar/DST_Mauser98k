@@ -363,7 +363,7 @@ local function fn()
 	inst.weapon_default = function(inst)
 		local value = PARAMS.RIFLE_DMG_M * TUNING[PARAMS.RIFLE_M]
 		inst.components.weapon:SetDamage(value)
-		inst.components.weapon:SetRange(1.2, 1.2)
+		inst.components.weapon:SetRange(1, 1)
 		inst.components.weapon:SetProjectile(nil)
 		inst.components.weapon:SetOnAttack(OnHit)
 		inst.components.weapon:SetOnProjectileLaunch(nil)
