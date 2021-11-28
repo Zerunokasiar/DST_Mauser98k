@@ -388,8 +388,9 @@ local function NewAttackAction(inst, action)
 		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 		if equip and equip:HasTag("mauser_rifle") then
 			if equip:HasTag("mauser_switch") then return "rifle_action" end
-			return equip:HasTag("mauser_bayonet") and "bayonet_action" or "attack"
+			return equip:HasTag("bayonet_action") and "bayonet_action" or "attack"
 		end
+		if equip and equip:HasTag("bayonet_action") then return "bayonet_action" end
 		return OldAttackAction(inst, action)
 	end
 end
@@ -398,8 +399,9 @@ local function NewAttackActionClient(inst, action)
 		local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 		if equip and equip:HasTag("mauser_rifle") then
 			if equip:HasTag("mauser_switch") then return "rifle_action" end
-			return equip:HasTag("mauser_bayonet") and "bayonet_action" or "attack"
+			return equip:HasTag("bayonet_action") and "bayonet_action" or "attack"
 		end
+		if equip and equip:HasTag("bayonet_action") then return "bayonet_action" end
 		return OldAttackActionClient(inst, action)
 	end
 end

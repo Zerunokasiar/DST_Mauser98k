@@ -279,7 +279,7 @@ local function fn()
 
 	inst:AddTag("sharp")
 	inst:AddTag("mauser_rifle")
-	inst:AddTag("mauser_bayonet")
+	inst:AddTag("bayonet_action")
 	
 	inst.AnimBase = "swap_rifleb"
 	inst.AnimReset = "swap_mauser_rifleb_m"

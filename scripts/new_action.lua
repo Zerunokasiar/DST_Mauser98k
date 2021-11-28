@@ -49,7 +49,7 @@ STRINGS.ACTIONS.MAUSER_RELOAD = {GENERIC = "Reload"}
 local function point_weapon(inst, doer, pos, actions, right)
 	if not right then return end
 	if not inst:HasTag("mauser_switch") then
-		if not inst:HasTag("mauser_bayonet") then return end
+		if not inst:HasTag("bayonet_action") then return end
 	end
 	local x, y, z = pos:Get()
 	local ents = TheSim:FindEntities(x, y, z, PARAMS.AUTOAIM)
@@ -67,7 +67,7 @@ end
 local function equipped_weapon(inst, doer, target, actions, right)
 	if not right then return end
 	if not inst:HasTag("mauser_switch") then
-		if not inst:HasTag("mauser_bayonet") then return end
+		if not inst:HasTag("bayonet_action") then return end
 	end
 	local flag = doer.replica.combat
 	flag = flag and flag:CanTarget(target)
