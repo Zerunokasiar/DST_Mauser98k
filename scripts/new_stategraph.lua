@@ -190,7 +190,7 @@ local RIFLE_ACTION_AUTO = State({
 
 	onexit = function(inst)
 		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		if equip then
+		if equip and equip:HasTag("mauser_rifle") then
 			inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
 		end
 		inst.sg.statemem.action = nil
