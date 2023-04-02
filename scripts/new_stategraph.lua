@@ -93,7 +93,7 @@ local RIFLE_ACTION = State({
 
 	onexit = function(inst)
 		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		if equip and equip:HasTag("mauser_rifle") then
+		if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
 			inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
 		end
 		inst.components.combat:SetTarget(nil)
@@ -170,7 +170,7 @@ local RIFLE_ACTION_CLIENT = State({
 
 	onexit = function(inst)
 		local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		if equip and equip:HasTag("mauser_rifle") then
+		if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
 			inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
 		end
 		if inst.sg:HasStateTag("abouttoattack") then

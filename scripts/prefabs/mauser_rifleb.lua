@@ -185,11 +185,27 @@ local function CanFire(inst, doer, target, pos)
 	return flag
 end
 
-local function OnFire(inst, doer, target, pos, action)
+local function GetMultiplier(inst)
+	local owner = inst.components.inventoryitem.owner
+	local combat = owner.components.combat
+	local multiplier = combat.damagemultiplier or 1
+	multiplier = multiplier * combat.externaldamagemultipliers:Get()
+	if multiplier > 1 then
+		multiplier = multiplier - 1
+		multiplier = multiplier / 2.0 + 1
+	end
+	return 1.0 / multiplier
+end
+
+local function OnFire(inst, doer, target, pos)
 	if not doer.components.combat:CanTarget(target) then
 		target = CloseTarget(doer, pos or target:GetPosition())
 	end
 	local proj = SpawnPrefab("mauser_bullet")
+	local damage = PARAMS.RIFLE_DMG_R * TUNING[PARAMS.RIFLE_R]
+	local multiplier = GetMultiplier(inst)
+	print(multiplier)
+	proj.components.weapon:SetDamage(damage * multiplier)
     proj:AddComponent("inventoryitem")
 	proj.Transform:SetPosition(doer.Transform:GetWorldPosition())
 	proj.components.inventoryitem.owner = doer
