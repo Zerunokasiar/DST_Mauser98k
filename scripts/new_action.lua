@@ -4,6 +4,17 @@ STRINGS = GLOBAL.STRINGS
 ACTIONS = GLOBAL.ACTIONS
 TheSim = TheSim or GLOBAL.TheSim
 
+local MAUSER_CHARGE = Action({ rmb=true,  mount_valid=true })
+MAUSER_CHARGE.str = "Mauser Charge"
+MAUSER_CHARGE.id = "MAUSER_CHARGE"
+MAUSER_CHARGE.fn = function(act)
+	local weapon = act.invobject
+    if weapon and weapon.OnBoostSet then
+        weapon:OnBoostSet(act.doer)
+		return true
+    end
+end
+
 local MAUSER_RANGED = Action({priority=2, rmb=true, distance=PARAMS.RANGE * PARAMS.AUTORANGE, mount_valid=true})
 MAUSER_RANGED.str = "Mauser Ranged"
 MAUSER_RANGED.id = "MAUSER_RANGED"
@@ -41,12 +52,14 @@ MAUSER_RELOAD.fn = function(act)
     end
 end
 
+AddAction(MAUSER_CHARGE)
 AddAction(MAUSER_RANGED)
 AddAction(MAUSER_RELOAD)
+STRINGS.ACTIONS.MAUSER_CHARGE = {GENERIC = "Charge!"}
 STRINGS.ACTIONS.MAUSER_RANGED = {GENERIC = "Fire!"}
 STRINGS.ACTIONS.MAUSER_RELOAD = {GENERIC = "Reload"}
 
-local function point_weapon(inst, doer, pos, actions, right)
+local function autoaim_point(inst, doer, pos, actions, right)
 	if not right then return end
 	if not inst:HasTag("mauser_switch") then
 		if not inst:HasTag("bayonet_action") then return end
@@ -64,8 +77,12 @@ local function point_weapon(inst, doer, pos, actions, right)
 	end
 end
 
-local function equipped_weapon(inst, doer, target, actions, right)
+local function autoaim_target(inst, doer, target, actions, right)
 	if not right then return end
+	if doer == target and not inst:HasTag("mauser_switch") then
+		table.insert(actions, ACTIONS.MAUSER_CHARGE)
+		return
+	end
 	if not inst:HasTag("mauser_switch") then
 		if not inst:HasTag("bayonet_action") then return end
 	end
@@ -75,7 +92,7 @@ local function equipped_weapon(inst, doer, target, actions, right)
 		table.insert(actions, ACTIONS.MAUSER_RANGED)
 		return
 	end
-	point_weapon(inst, doer, target:GetPosition(), actions, right)
+	autoaim_point(inst, doer, target:GetPosition(), actions, right)
 end
 
 local function inventory_ammo(inst, doer, actions)
@@ -84,6 +101,6 @@ local function inventory_ammo(inst, doer, actions)
 	end
 end
 
-AddComponentAction("POINT", "finiteuses_mauser", point_weapon)
-AddComponentAction("EQUIPPED", "finiteuses_mauser", equipped_weapon)
+AddComponentAction("POINT", "finiteuses_mauser", autoaim_point)
+AddComponentAction("EQUIPPED", "finiteuses_mauser", autoaim_target)
 AddComponentAction("INVENTORY", "activatable_mauser", inventory_ammo)

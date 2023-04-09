@@ -1,5 +1,5 @@
 name 						= "Mauser Rifle & Bayonet"
-version 					= "2.3.3t"
+version 					= "2.4.0m"
 description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n"..version
 author 						= "Zerunokasiar"
 forumthread 				= ""
@@ -54,33 +54,33 @@ configuration_options =
         default = 1,
 	},
     {
-		name 	= "mauser_moving_speed_factor.2_2_1",
+		name 	= "mauser_moving_speed_factor.2_4_0",
         label 	= "Moving Speed Factor of Rifle&Bayonet",
         options =
         {
 			{description = "x1.00",	data = 1.00, hover = "not changed"},
-			{description = "x1.05",	data = 1.05, hover = "x1.05 melee, x0.95 range"},
-			{description = "x1.10",	data = 1.10, hover = "x1.10 melee, x0.91 range"},
-			{description = "x1.15",	data = 1.15, hover = "x1.15 melee, x0.87 range"},
-			{description = "x1.20",	data = 1.20, hover = "x1.20 melee, x0.83 range"},
-			{description = "x1.25",	data = 1.25, hover = "x1.25 melee, x0.80 range"},
-			{description = "x1.30",	data = 1.30, hover = "x1.30 melee, x0.77 range"},
-			{description = "x1.35",	data = 1.35, hover = "x1.35 melee, x0.74 range"},
-			{description = "x1.40",	data = 1.40, hover = "x1.40 melee, x0.71 range"},
-			{description = "x1.45",	data = 1.45, hover = "x1.45 melee, x0.69 range"},
-			{description = "x1.50",	data = 1.50, hover = "x1.50 melee, x0.67 range"},
+			{description = "x1.05", data = 1.05, hover = "speed x1.05, hunger x1.10"},
+			{description = "x1.10", data = 1.10, hover = "speed x1.10, hunger x1.21"},
+			{description = "x1.15", data = 1.15, hover = "speed x1.15, hunger x1.32"},
+			{description = "x1.20", data = 1.20, hover = "speed x1.20, hunger x1.44"},
+			{description = "x1.25", data = 1.25, hover = "speed x1.25, hunger x1.56"},
+			{description = "x1.30", data = 1.30, hover = "speed x1.30, hunger x1.69"},
+			{description = "x1.35", data = 1.35, hover = "speed x1.35, hunger x1.82"},
+			{description = "x1.40", data = 1.40, hover = "speed x1.40, hunger x1.96"},
+			{description = "x1.45", data = 1.45, hover = "speed x1.45, hunger x2.10"},
+			{description = "x1.50", data = 1.50, hover = "speed x1.50, hunger x2.25"},
+			{description = "x1.55", data = 1.55, hover = "speed x1.55, hunger x2.40"},
+			{description = "x1.60", data = 1.60, hover = "speed x1.60, hunger x2.56"},
+			{description = "x1.65", data = 1.65, hover = "speed x1.65, hunger x2.72"},
+			{description = "x1.70", data = 1.70, hover = "speed x1.70, hunger x2.89"},
+			{description = "x1.75", data = 1.75, hover = "speed x1.75, hunger x3.06"},
+			{description = "x1.80", data = 1.80, hover = "speed x1.80, hunger x3.24"},
+			{description = "x1.85", data = 1.85, hover = "speed x1.85, hunger x3.42"},
+			{description = "x1.90", data = 1.90, hover = "speed x1.90, hunger x3.61"},
+			{description = "x1.95", data = 1.95, hover = "speed x1.95, hunger x3.80"},
+			{description = "x2.00", data = 2.00, hover = "speed x2.00, hunger x4.00"},
 		},
-        default = 1.25,
-    },
-    {
-		name 	= "mauser_ranged_mode_debuff.2_2_1",
-        label 	= "Ranged Mode Debuff of Rifle&Bayonet",
-        options =
-        {
-			{description = "Disable",	data = false},
-			{description = "Enable",	data = true},
-		},
-        default = true,
+        default = 1.4,
     },
 	{
 		name 	= "mauser_ammo_value.2_1_2",

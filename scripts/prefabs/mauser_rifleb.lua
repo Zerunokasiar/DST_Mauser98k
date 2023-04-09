@@ -27,13 +27,14 @@ end
 local function OnEquip(inst, owner)
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
-	OnAnimReset(inst, owner)
+	inst:OnAnimReset(owner)
 	inst:OnDefault()
 end
 
 local function OnUnequip(inst, owner)
 	owner.AnimState:Hide("ARM_carry")
 	owner.AnimState:Show("ARM_normal")
+	inst:OnBoostReset(owner)
 	inst:OnDefault()
 end
 
@@ -280,6 +281,22 @@ local function OnChange(inst)
 	inst:Remove()
 end
 
+local function OnBoostSet(inst, owner)
+	local mult = PARAMS.MOVING_SPEED
+	inst.components.equippable.walkspeedmult = mult
+	local mult2 = mult * mult
+	if owner.components.hunger ~= nil then
+        owner.components.hunger.burnratemodifiers:SetModifier(inst, mult)
+    end
+end
+
+local function OnBoostReset(inst, owner)
+	inst.components.equippable.walkspeedmult = 1.0
+    if owner.components.hunger ~= nil then
+        owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
+	end
+end
+
 local function fn()
 	local inst = CreateEntity()
 	inst.entity:AddTransform()
@@ -296,13 +313,18 @@ local function fn()
 	inst:AddTag("sharp")
 	inst:AddTag("mauser_rifle")
 	inst:AddTag("bayonet_action")
+	inst:AddTag("whistle")
 	
 	inst.AnimBase = "swap_rifleb"
 	inst.AnimReset = "swap_mauser_rifleb_m"
 	inst.AnimSet = "swap_mauser_rifleb_r"
+	inst.OnAnimSet = OnAnimSet
+	inst.OnAnimReset = OnAnimReset
 	inst.OnDefault = OnDefault
 	inst.CanFire = CanFire
 	inst.OnFire = OnFire
+	inst.OnBoostSet = OnBoostSet
+	inst.OnBoostReset = OnBoostReset
 	
 	if TheSim:GetGameID() == "DST" then
 		inst.entity:AddNetwork()
@@ -317,16 +339,10 @@ local function fn()
 	inst.components.equippable:SetOnEquip(OnEquip)
 	inst.components.equippable:SetOnUnequip(OnUnequip)
 	inst.equippable_default = function(inst)
-		if PARAMS.MOVING_SPEED then
-			inst.components.equippable.walkspeedmult = PARAMS.MOVING_SPEED
-		end
+		inst.components.equippable.walkspeedmult = 1.0
 	end
 	inst.equippable_switch = function(inst)
-		if PARAMS.MOVING_DEBUFF and PARAMS.MOVING_SPEED then
-			inst.components.equippable.walkspeedmult = 1.0 / PARAMS.MOVING_SPEED
-		else
-			inst.components.equippable.walkspeedmult = 1.0
-		end
+		inst.components.equippable.walkspeedmult = 1.0
 	end
 	inst:equippable_default()
 
@@ -396,7 +412,6 @@ local function fn()
 		inst.components.weapon:SetOnProjectileLaunch(Firefn)
 	end
 	inst:weapon_default()
-
     return inst
 end
 

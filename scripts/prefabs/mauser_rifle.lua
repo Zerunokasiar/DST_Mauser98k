@@ -27,6 +27,7 @@ end
 local function OnEquip(inst, owner)
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
+	inst:OnBoostReset(owner)
 	if inst.components.finiteuses_mauser:GetUses("ammo") > 0 then
 		OnAnimSet(inst, owner)
 		inst:OnSwitch()
@@ -39,6 +40,7 @@ end
 local function OnUnequip(inst, owner)
 	owner.AnimState:Hide("ARM_carry")
 	owner.AnimState:Show("ARM_normal")
+	inst:OnBoostReset(owner)
 	inst:OnDefault()
 end
 
@@ -286,6 +288,22 @@ local function OnChange(inst, flag)
 	inst:Remove()
 end
 
+local function OnBoostSet(inst, owner)
+	local mult = PARAMS.MOVING_SPEED
+	inst.components.equippable.walkspeedmult = mult
+	local mult2 = mult * mult
+	if owner.components.hunger ~= nil then
+        owner.components.hunger.burnratemodifiers:SetModifier(inst, mult)
+    end
+end
+
+local function OnBoostReset(inst, owner)
+	inst.components.equippable.walkspeedmult = 1.0
+    if owner.components.hunger ~= nil then
+        owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
+	end
+end
+
 local function fn()
 	local inst = CreateEntity()
 	inst.entity:AddTransform()
@@ -300,6 +318,7 @@ local function fn()
 	end
 	
 	inst:AddTag("mauser_rifle")
+	inst:AddTag("whistle")
 
 	inst.AnimBase = "swap_rifle"
 	inst.AnimReset = "swap_mauser_rifle_m"
@@ -308,6 +327,8 @@ local function fn()
 	inst.OnSwitch = OnSwitch
 	inst.CanFire = CanFire
 	inst.OnFire = OnFire
+	inst.OnBoostSet = OnBoostSet
+	inst.OnBoostReset = OnBoostReset
 
 	if TheSim:GetGameID() == "DST" then
 		inst.entity:AddNetwork()
@@ -393,7 +414,6 @@ local function fn()
 		inst.components.weapon:SetOnProjectileLaunch(Firefn)
 	end
 	inst:weapon_default()
-
 	return inst
 end
 
