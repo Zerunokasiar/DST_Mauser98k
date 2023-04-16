@@ -7,7 +7,11 @@ TheSim = TheSim or GLOBAL.TheSim
 
 local function CloseTarget(doer, pos)
 	local x, y, z = pos:Get()
-	local ents = TheSim:FindEntities(x, y, z, PARAMS.AUTOAIM)
+	local range = PARAMS.AUTOAIM
+	if doer.components.playercontroller.isclientcontrollerattached then
+		range = PARAMS.RANGE * PARAMS.AUTORANGE
+	end
+	local ents = TheSim:FindEntities(x, y, z, range)
 	local minDist = nil;
 	local target = nil;
 	for k,v in pairs(ents) do
@@ -44,13 +48,14 @@ local RIFLE_ACTION = State({
 		inst.components.combat:StartAttack()
 		inst.components.locomotor:Stop()
 		inst.AnimState:PlayAnimation("speargun")
-		if inst.sg.laststate == inst.sg.currentstate then
+		if equip:HasTag("mauser_switch") or inst.sg.laststate == inst.sg.currentstate then
+		-- if inst.sg.laststate == inst.sg.currentstate then
 			inst.sg.statemem.chained = true
 			inst.AnimState:SetTime(6 * FRAMES)
 		end
 		
 		local cooldown = inst.components.combat.min_attack_period
-		cooldown = cooldown + (inst.sg.statemem.chained and 8 or 14) * FRAMES
+		cooldown = cooldown + (inst.sg.statemem.chained and 6 or 12) * FRAMES
 		inst.sg:SetTimeout(cooldown)
 
 		if target ~= nil and target:IsValid() then
@@ -122,13 +127,14 @@ local RIFLE_ACTION_CLIENT = State({
 		inst.replica.combat:StartAttack()
 		inst.components.locomotor:Stop()
 		inst.AnimState:PlayAnimation("speargun")
-		if inst.sg.laststate == inst.sg.currentstate then
+		if equip:HasTag("mauser_switch") or inst.sg.laststate == inst.sg.currentstate then
+		-- if inst.sg.laststate == inst.sg.currentstate then
 			inst.sg.statemem.chained = true
 			inst.AnimState:SetTime(6 * FRAMES)
 		end
 		
 		local cooldown = inst.replica.combat:MinAttackPeriod()
-		cooldown = cooldown + (inst.sg.statemem.chained and 8 or 14) * FRAMES
+		cooldown = cooldown + (inst.sg.statemem.chained and 6 or 12) * FRAMES
 		inst.sg:SetTimeout(cooldown)
 
 		inst:PerformPreviewBufferedAction()
@@ -214,7 +220,7 @@ local BAYONET_ACTION = State({
 
 	timeline =
 	{
-		TimeEvent(6 * FRAMES, function(inst)
+		TimeEvent(4 * FRAMES, function(inst)
 			if not inst.components.rider:IsRiding() then
 				inst:PerformBufferedAction()
 				inst.sg:RemoveStateTag("abouttoattack")
@@ -296,7 +302,7 @@ local BAYONET_ACTION_CLIENT = State({
 
 	timeline =
 	{
-		TimeEvent(6 * FRAMES, function(inst)
+		TimeEvent(4 * FRAMES, function(inst)
 			if not inst.replica.rider:IsRiding() then
 				inst:ClearBufferedAction()
 				inst.sg:RemoveStateTag("abouttoattack")
@@ -351,25 +357,32 @@ AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.MAUSER_CHARGE,
 
 local function RangedAction(inst, action)
 	inst.sg.mem.localchainattack = not action.forced or nil
-	if not (inst.sg:HasStateTag("attack")
-	and action.target == inst.sg.statemem.attacktarget
+	local playercontroller = inst.components.playercontroller
+	local attack_tag =
+				playercontroller ~= nil and
+				playercontroller.remote_authority and
+				playercontroller.remote_predicting and
+				"abouttoattack" or
+				"attack"
+	if not (inst.sg:HasStateTag(attack_tag)
+	-- and action.target == inst.sg.statemem.attacktarget
 	or inst.components.health:IsDead())
 	then
 		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
 		local flag = equip:HasTag("mauser_rifle")
---		flag = flag and not equip:HasTag("mauser_switch")
+		-- flag = flag and not equip:HasTag("mauser_switch")
 		return flag and "rifle_action" or nil
 	end
 end
 
 local function RangedActionClient(inst, action)
 	if not (inst.sg:HasStateTag("attack")
-	and action.target == inst.sg.statemem.attacktarget
+	-- and action.target == inst.sg.statemem.attacktarget
 	or inst.replica.health:IsDead())
 	then
 		local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
 		local flag = equip:HasTag("mauser_rifle")
---		flag = flag and not equip:HasTag("mauser_switch")
+		-- flag = flag and not equip:HasTag("mauser_switch")
 		return flag and "rifle_action" or nil
 	end
 end
@@ -379,47 +392,41 @@ AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.MAUSER_RANGED,
 AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.MAUSER_RELOAD, "give"))
 AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.MAUSER_RELOAD, "give"))
 
-local SGWils = GLOBAL.require "stategraphs/SGwilson"
-local SGWilsClient = GLOBAL.require "stategraphs/SGwilson_client"
-local OldAttackAction
-local OldAttackActionClient
-
-for k, v in pairs(SGWils.actionhandlers) do
-	if v["action"]["id"] == "ATTACK" then	
-		OldAttackAction = v["deststate"]
-	end
-end
-for k, v in pairs(SGWilsClient.actionhandlers) do
-	if v["action"]["id"] == "ATTACK" then
-		OldAttackActionClient = v["deststate"]
-	end
-end
-
-local function NewAttackAction(inst, action)
-	inst.sg.mem.localchainattack = not action.forced or nil
-	if not (inst.sg:HasStateTag("attack") and action.target == inst.sg.statemem.attacktarget or inst.components.health:IsDead()) then
-		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		if equip and equip:HasTag("mauser_rifle") then
-			if equip:HasTag("mauser_switch") then return "rifle_action" end
-			return equip:HasTag("bayonet_action") and "bayonet_action" or "attack"
+local function postinit(self)
+	for k,v in pairs(self.actionhandlers) do
+		if v.action.id == "ATTACK" then	
+			local oldaction = v.deststate
+			v.deststate = function(inst, action)
+				local motion = oldaction(inst, action)
+				if motion == "attack" then
+					local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+					if equip and equip:HasTag("mauser_rifle") then
+						if equip:HasTag("mauser_switch") then return "rifle_action" end
+						return equip:HasTag("bayonet_action") and "bayonet_action" or "attack"
+					end
+				end
+				return motion
+			end
 		end
-		if equip and equip:HasTag("bayonet_action") then return "bayonet_action" end
-		return OldAttackAction(inst, action)
 	end
 end
-local function NewAttackActionClient(inst, action)
-	if not (inst.sg:HasStateTag("attack") and action.target == inst.sg.statemem.attacktarget or inst.replica.health:IsDead()) then
-		local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		if equip and equip:HasTag("mauser_rifle") then
-			if equip:HasTag("mauser_switch") then return "rifle_action" end
-			return equip:HasTag("bayonet_action") and "bayonet_action" or "attack"
+local function postinitclient(self)
+	for k,v in pairs(self.actionhandlers) do
+		if v.action.id == "ATTACK" then
+			local oldaction = v.deststate
+			v.deststate = function(inst, action)
+				local motion = oldaction(inst, action)
+				if motion == "attack" then
+					local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+					if equip and equip:HasTag("mauser_rifle") then
+						if equip:HasTag("mauser_switch") then return "rifle_action" end
+						return equip:HasTag("bayonet_action") and "bayonet_action" or "attack"
+					end
+				end
+				return motion
+			end
 		end
-		if equip and equip:HasTag("bayonet_action") then return "bayonet_action" end
-		return OldAttackActionClient(inst, action)
 	end
 end
-
-AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.ATTACK, NewAttackAction))
-AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.ATTACK, NewAttackActionClient))
-GLOBAL.package.loaded["stategraphs/SGwilson"] = nil
-GLOBAL.package.loaded["stategraphs/SGwilson_client"] = nil  
+AddStategraphPostInit("wilson", postinit)
+AddStategraphPostInit("wilson_client",postinitclient)

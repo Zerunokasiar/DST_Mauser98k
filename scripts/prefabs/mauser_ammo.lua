@@ -23,9 +23,12 @@ local function OnReload(inst, doer)
 		doer.components.talker:Say("Already Full!")
 		return true
 	end
-	stack:Get():Remove()
-
-	equip.components.finiteuses_mauser:AddUses("ammo")
+	local input1 = stack and stack:StackSize() or 0
+	local input2 = finit:GetMaxUses("ammo")
+	local input3 = finit:GetUses("ammo")
+	local input4 = math.min(input1, input2 - input3)
+	if input4 > 0 then stack:Get(input4):Remove() end
+	finit:AddUses("ammo", input4)
 	doer.SoundEmitter:PlaySound("rifle/reload/reload_1")
 	equip:onUpdate()
 	return true

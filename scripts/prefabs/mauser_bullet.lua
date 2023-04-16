@@ -46,4 +46,7 @@ local function fn()
     inst:DoPeriodicTask(0.5,inst.Remove)
     return inst
 end
-return Prefab( "mauser_bullet", fn, assets) 
+
+STRINGS.NAMES.MAUSER_BAYONET  = "Fired Bullet"
+
+return Prefab( "mauser_bullet", fn, assets)
