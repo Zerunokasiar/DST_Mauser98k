@@ -4,6 +4,8 @@ PrefabFiles =
 	"mauser_bayonet",
 	"mauser_bullet",
 	"mauser_gunstock",
+	"mauser_gunstockb",
+	"mauser_parts",
 	"mauser_rifle",
 	"mauser_rifleb",
 }
@@ -14,10 +16,12 @@ Assets =
 	Asset("ATLAS", "images/inventoryimages/mauser_bayonet.xml"),
 	Asset("ATLAS", "images/inventoryimages/mauser_rifle.xml"),
 	Asset("ATLAS", "images/inventoryimages/mauser_rifleb.xml"),
+	Asset("ATLAS", "images/inventoryimages/mauser_parts.xml"),
 	Asset("IMAGE", "images/inventoryimages/mauser_ammo.tex"),
 	Asset("IMAGE", "images/inventoryimages/mauser_bayonet.tex"),
 	Asset("IMAGE", "images/inventoryimages/mauser_rifle.tex"),
 	Asset("IMAGE", "images/inventoryimages/mauser_rifleb.tex"),
+	Asset("IMAGE", "images/inventoryimages/mauser_parts.tex"),
 }
 
 local env = GLOBAL.getfenv(1)

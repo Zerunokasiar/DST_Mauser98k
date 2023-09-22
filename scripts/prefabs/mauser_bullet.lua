@@ -47,6 +47,6 @@ local function fn()
     return inst
 end
 
-STRINGS.NAMES.MAUSER_BAYONET  = "Fired Bullet"
+STRINGS.NAMES.MAUSER_BULLET  = "Fired Bullet"
 
 return Prefab( "mauser_bullet", fn, assets)

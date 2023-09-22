@@ -50,8 +50,12 @@ function FiniteUses_Mauser:GetPercent(target)
     return self:GetUses(target) / self:GetMaxUses(target)
 end
 
-function FiniteUses_Mauser:SetPercent(target, value)
-    self:SetUses(target, self:GetMaxUses(target) * value)
+function FiniteUses_Mauser:SetPercent(target, value, ceil)
+	value = self:GetMaxUses(target) * value
+	if ceil then
+		value = math.ceil(value)
+	end
+    self:SetUses(target, value)
 end
 
 function FiniteUses_Mauser:GetFull(target)

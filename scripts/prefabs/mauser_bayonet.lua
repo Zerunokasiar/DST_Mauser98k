@@ -24,23 +24,20 @@ local function canReload(inst, item)
 	if item.prefab ~= "mauser_bayonet" then
 		return false
 	end
-
-	local input1 = inst.components.finiteuses:GetPercent()
-	local input2 = item.components.finiteuses:GetPercent()
-
-	if 1 < input1 + input2  then
-		inst.components.finiteuses:SetPercent(1)
-		item.components.finiteuses:SetPercent(input1 + input2 - 1)
-		item.components.finiteuses:SetUses(math.ceil(item.components.finiteuses:GetUses()))
+	local input1 = inst.components.finiteuses:GetUses()
+	local input2 = item.components.finiteuses:GetUses()
+	local max = inst.components.finiteuses:GetMaxUses()
+	local result = max < (input1 + input2)
+	if result then
+		inst.components.finiteuses:SetUses(max)
+		item.components.finiteuses:SetUses(input1 + input2 - max)
+	else
+		inst.components.finiteuses:SetUses(input1 + input2)
 	end
-	return inst.components.finiteuses:GetPercent() < 1
+	return not result
 end
 
 local function onReload(inst, giver, item)
-	local input1 = inst.components.finiteuses:GetPercent()
-	local input2 = item.components.finiteuses:GetPercent()
-	inst.components.finiteuses:SetPercent(input1 + input2)
-	inst.components.finiteuses:SetUses(math.ceil(inst.components.finiteuses:GetUses()))
 end
 
 local function onBreak(inst)

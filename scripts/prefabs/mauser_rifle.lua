@@ -8,7 +8,9 @@ local assets =
 	Asset("SOUNDPACKAGE", "sound/rifle.fev"),
 	Asset("SOUND", "sound/rifle.fsb"),
 	Asset("ATLAS", "images/inventoryimages/mauser_rifle.xml"),
+	Asset("IMAGE", "images/inventoryimages/mauser_rifle.tex"),
 	Asset("ATLAS", "images/inventoryimages/mauser_switch.xml"),
+	Asset("IMAGE", "images/inventoryimages/mauser_switch.tex"),
 }
 
 local prefabs =
@@ -48,25 +50,35 @@ local function CanReloadfn(inst)
 	inst.canReloadfn = {}
 
 	inst.canReloadfn['mauser_gunstock'] = function(inst, item)
-		local input1 = inst.components.finiteuses_mauser:GetPercent("rifle")
-		local input2 = item.components.finiteuses:GetPercent()
-	
-		if 1 < input1 + input2  then
-			inst.components.finiteuses_mauser:SetPercent("rifle", 1)
-			item.components.finiteuses:SetPercent(input1 + input2 - 1)
-			item.components.finiteuses:SetUses(math.ceil(item.components.finiteuses:GetUses()))
-			
-			if not inst:HasTag("mauser_switch") then
-				inst:finiteuses_default()
-			end
+		local input1 = inst.components.finiteuses_mauser:GetUses("rifle")
+		local input2 = item.components.finiteuses:GetUses()
+		local max = inst.components.finiteuses_mauser:GetMaxUses("rifle")
+		local result = max < (input1 + input2)
+		if result then
+			inst.components.finiteuses_mauser:SetUses("rifle", max)
+			item.components.finiteuses:SetUses(input1 + input2 - max)
+		else
+			inst.components.finiteuses_mauser:SetUses("rifle", input1 + input2)
 		end
-		return not inst.components.finiteuses_mauser:GetFull("rifle")
+		return not result
 	end
-	
 	inst.canReloadfn['mauser_ammo'] = function(inst, item)
-		return not inst.components.finiteuses_mauser:GetFull("ammo")
+		if inst.components.finiteuses_mauser:GetFull("ammo") then
+			return false
+		end
+		local input1 = inst.components.finiteuses_mauser:GetUses("ammo")
+		local input2 = item.components.stackable:StackSize()
+		local max = inst.components.finiteuses_mauser:GetMaxUses("ammo")
+		local result = max < (input1 + input2)
+		if result then
+			inst.components.finiteuses_mauser:SetUses("ammo", max)
+			item.components.stackable:SetStackSize(input1 + input2 - max + 1)
+		else
+			inst.components.finiteuses_mauser:SetUses("ammo", input1 + input2)
+			item.components.stackable:SetStackSize(1)
+		end
+		return true
 	end
-
 	inst.canReloadfn['mauser_bayonet'] = function(inst, item)
 		return true
 	end
@@ -74,62 +86,27 @@ end
 
 local function CanReload(inst, item)
 	local fn = inst.canReloadfn[item.prefab]
-	return fn and fn(inst, item) or false
+	local result = fn and fn(inst, item) or false
+	inst:onUpdate()
+	return result
 end
 
 local function OnReloadfn(inst)
 	inst.onReloadfn = {}
 
 	inst.onReloadfn['mauser_gunstock'] = function(inst, giver, item)
-		local input1 = inst.components.finiteuses_mauser:GetPercent("rifle")
-		local input2 = item.components.finiteuses:GetPercent()
-		inst.components.finiteuses_mauser:SetPercent("rifle", input1 + input2)
-
-		local value = math.ceil(inst.components.finiteuses_mauser:GetUses("rifle"))
-		inst.components.finiteuses_mauser:SetUses("rifle", value)
-
-		if not inst:HasTag("mauser_switch") then
-			inst:finiteuses_default()
-		end
 	end
-
 	inst.onReloadfn['mauser_ammo'] = function(inst, giver, item)
-		local inven = giver.components.inventory
-		local items = inven and inven:GetActiveItem()
-		local stack = items and items.components.stackable
-		local finit = inst.components.finiteuses_mauser
-
-		finit:AddUses("ammo")
-		if finit:GetFull("ammo") then return end
-
-		local input1 = stack and stack:StackSize() or 0
-		local input2 = finit:GetMaxUses("ammo")
-		local input3 = finit:GetUses("ammo")
-		local input4 = math.min(input1, input2 - input3)
-
-		if input1 == input4 then inven:SetActiveItem(nil) end
-		if input4 > 0 then stack:Get(input4):Remove() end
-		
-		finit:AddUses("ammo", input4)
-		
-		if inst:HasTag("mauser_switch") then
-			inst:finiteuses_switch()
-		end
 		giver.SoundEmitter:PlaySound("rifle/reload/reload_1")
 	end
-	
 	inst.onReloadfn['mauser_bayonet'] = function(inst, giver, item)
-
 		local prefab = SpawnPrefab("mauser_rifleb")
 		local ammo = inst.components.finiteuses_mauser:GetUses("ammo")
 		local rifle = inst.components.finiteuses_mauser:GetUses("rifle")
 		local bayonet = item.components.finiteuses:GetPercent()
 		prefab.components.finiteuses_mauser:SetUses("ammo", ammo)
 		prefab.components.finiteuses_mauser:SetUses("rifle", rifle)
-		prefab.components.finiteuses_mauser:SetPercent("bayonet", bayonet)
-
-		local value = math.ceil(inst.components.finiteuses_mauser:GetUses("bayonet"))
-		inst.components.finiteuses_mauser:SetUses("bayonet", value)
+		prefab.components.finiteuses_mauser:SetPercent("bayonet", bayonet, true)
 		prefab.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
 		local owner = inst.components.inventoryitem.owner
@@ -155,11 +132,15 @@ local function OnBreak(inst)
 	local owner = inst.components.inventoryitem.owner
 
 	for i = 1, inst.components.finiteuses_mauser:GetUses("ammo") do
-		local prefab = SpawnPrefab("mauser_ammo")
+		local ammo = SpawnPrefab("mauser_ammo")
 		owner = owner or inst
-		prefab.Transform:SetPosition(owner.Transform:GetWorldPosition())
-		prefab.components.inventoryitem:OnDropped(true, 1.0)
+		ammo.Transform:SetPosition(owner.Transform:GetWorldPosition())
+		ammo.components.inventoryitem:OnDropped(true, 1.0)
 	end
+	local gears = SpawnPrefab("gears")
+	owner = owner or inst
+	gears.Transform:SetPosition(owner.Transform:GetWorldPosition())
+	gears.components.inventoryitem:OnDropped(true, 1.0)
 	inst:Remove()
 end
 

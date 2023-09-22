@@ -1,10 +1,10 @@
 PARAMS = MAUSER_PARAMS
 local assets =
 {
-	Asset("ANIM", "anim/mauser_rifle.zip"),
-	Asset("ANIM", "anim/swap_mauser_rifle_m.zip"),
-	Asset("ATLAS", "images/inventoryimages/mauser_rifle.xml"),
-	Asset("IMAGE", "images/inventoryimages/mauser_rifle.tex"),
+	Asset("ANIM", "anim/mauser_rifleb.zip"),
+    Asset("ANIM", "anim/swap_mauser_rifleb_m.zip"),
+	Asset("ATLAS", "images/inventoryimages/mauser_rifleb.xml"),
+	Asset("IMAGE", "images/inventoryimages/mauser_rifleb.tex"),
 }
 
 local prefabs =
@@ -12,7 +12,7 @@ local prefabs =
 }
 
 local function OnEquip(inst, owner)
-	owner.AnimState:OverrideSymbol("swap_object", "swap_mauser_rifle_m", "swap_rifle")
+	owner.AnimState:OverrideSymbol("swap_object", "swap_mauser_rifleb_m", "swap_rifleb")
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
 	inst:BoostOff(owner)
@@ -28,20 +28,29 @@ local function CanReloadfn(inst)
 	inst.canReloadfn = {}
 
 	inst.canReloadfn['mauser_gunstock'] = function(inst, item)
-		local input1 = inst.components.finiteuses:GetUses()
+		local input1 = inst.components.finiteuses_mauser:GetUses("rifle")
 		local input2 = item.components.finiteuses:GetUses()
-		local max = inst.components.finiteuses:GetMaxUses()
+		local max = inst.components.finiteuses_mauser:GetMaxUses("rifle")
 		local result = max < (input1 + input2)
 		if result then
-			inst.components.finiteuses:SetUses(max)
+			inst.components.finiteuses_mauser:SetUses("rifle", max)
 			item.components.finiteuses:SetUses(input1 + input2 - max)
 		else
-			item.components.finiteuses:SetUses(input1 + input2)
+			inst.components.finiteuses_mauser:SetUses("rifle", input1 + input2)
 		end
 		return not result
 	end
 	inst.canReloadfn['mauser_bayonet'] = function(inst, item)
-		return true
+		local input1 = inst.components.finiteuses_mauser:GetPercent("bayonet")
+		local input2 = item.components.finiteuses:GetPercent()
+		local result = 1 < (input1 + input2)
+		if result then
+			inst.components.finiteuses_mauser:SetPercent("bayonet", 1)
+			item.components.finiteuses:SetPercent(input1 + input2 - 1)
+		else
+			inst.components.finiteuses_mauser:SetPercent("bayonet", input1 + input2, true)
+		end
+		return not result
 	end
 	inst.canReloadfn['mauser_parts'] = function(inst, item)
 		return true
@@ -50,7 +59,9 @@ end
 
 local function CanReload(inst, item)
 	local fn = inst.canReloadfn[item.prefab]
-	return fn and fn(inst, item) or false
+	local result = fn and fn(inst, item) or false
+	inst:onUpdate()
+	return result
 end
 
 local function OnReloadfn(inst)
@@ -59,24 +70,13 @@ local function OnReloadfn(inst)
 	inst.onReloadfn['mauser_gunstock'] = function(inst, giver, item)
 	end
 	inst.onReloadfn['mauser_bayonet'] = function(inst, giver, item)
-		local rifle = inst.components.finiteuses:GetUses()
-		local bayonet = item.components.finiteuses:GetPercent()
-		local prefab = SpawnPrefab("mauser_gunstockb")
-		prefab.components.finiteuses_mauser:SetUses("rifle", rifle)
-		prefab.components.finiteuses_mauser:SetPercent("bayonet", bayonet, true)
-		prefab.Transform:SetPosition(inst.Transform:GetWorldPosition())
-
-		local owner = inst.components.inventoryitem.owner
-		owner = owner and (owner.components.inventory or owner.components.container)
-		local slot = owner and owner:GetItemSlot(inst)
-		local fn = slot and owner.GiveItem or owner and owner.Equip
-		if fn then fn(owner, prefab, slot) end
-		inst:Remove()
 	end
 	inst.onReloadfn['mauser_parts'] = function(inst, giver, item)
-		local rifle = inst.components.finiteuses:GetUses()
-		local prefab = SpawnPrefab("mauser_rifle")
+		local rifle = inst.components.finiteuses_mauser:GetUses("rifle")
+		local bayonet = inst.components.finiteuses_mauser:GetUses("bayonet")
+		local prefab = SpawnPrefab("mauser_rifleb")
 		prefab.components.finiteuses_mauser:SetUses("rifle", rifle)
+		prefab.components.finiteuses_mauser:SetUses("bayonet", bayonet)
 		prefab.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
 		local owner = inst.components.inventoryitem.owner
@@ -91,21 +91,33 @@ end
 local function OnReload(inst, giver, item)
 	local fn = inst.onReloadfn[item.prefab]
 	if fn then fn(inst, giver, item) end
+	inst:onUpdate()
 end
 
 local function OnBreak(inst)
+	local prefab = SpawnPrefab("mauser_gunstock")
+	local rifle = inst.components.finiteuses_mauser:GetUses("rifle")
+	prefab.components.finiteuses:SetUses(rifle)
+
+	local owner = inst.components.inventoryitem.owner
+	owner = owner and owner.components.inventory
+	if owner then owner:Equip(prefab) end
 	inst:Remove()
 end
 
+local function OnHit(inst, doer, target, pos)
+	inst.components.finiteuses_mauser:Uses("bayonet")
+end
+
 local function OnDebuffSet(inst, owner)
-	local value = PARAMS.RIFLE_DMG_M * TUNING[PARAMS.RIFLE_M]
+	local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
 	local mult = PARAMS.MOVING_SPEED
 	local mult2 = mult * mult
 	inst.components.weapon:SetDamage(value / mult2)
 end
 
 local function OnDebuffReset(inst, owner)
-	local value = PARAMS.RIFLE_DMG_M * TUNING[PARAMS.RIFLE_M]
+	local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
 	inst.components.weapon:SetDamage(value)
 end
 
@@ -149,19 +161,22 @@ local function fn()
 	local inst = CreateEntity()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
-	inst.AnimState:SetBank("rifle")
-	inst.AnimState:SetBuild("mauser_rifle")
+	inst.AnimState:SetBank("rifleb")
+	inst.AnimState:SetBuild("mauser_rifleb")
 	inst.AnimState:PlayAnimation("idle")
-
+	
 	MakeInventoryPhysics(inst)
 	if MakeInventoryFloatable then
 		MakeInventoryFloatable(inst, "med", 0.05, {0.75, 0.4, 0.75})
 	end
 
+	inst:AddTag("sharp")
+	inst:AddTag("jab")
+	inst:AddTag("pointy")
 	inst:AddTag("whistle")
 	inst.BoostOn = BoostOn
 	inst.BoostOff = BoostOff
-
+	
 	if TheSim:GetGameID() == "DST" then
 		inst.entity:AddNetwork()
 		inst.entity:SetPristine()
@@ -170,7 +185,7 @@ local function fn()
 	end
 
 	inst:AddComponent("inspectable")
-
+	
 	inst:AddComponent("equippable")
 	inst.components.equippable:SetOnEquip(OnEquip)
 	inst.components.equippable:SetOnUnequip(OnUnequip)
@@ -182,28 +197,38 @@ local function fn()
 	inst.components.trader:SetAcceptTest(CanReload)
 	inst.components.trader.onaccept = OnReload
 
-	inst:AddComponent("tradable")
-
 	inst:AddComponent("boostable_mauser")
 
+	inst:AddComponent("finiteuses_mauser")
+	inst.components.finiteuses_mauser:SetMaxUses("bayonet", PARAMS.BAYONET_HP_2)
+	inst.components.finiteuses_mauser:SetMaxUses("rifle", PARAMS.RIFLE_HP)
+	inst.components.finiteuses_mauser:SetUses("bayonet", PARAMS.BAYONET_HP_2)
+	inst.components.finiteuses_mauser:SetUses("rifle", PARAMS.RIFLE_HP)
+	
 	inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.imagename = "mauser_rifle"
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/mauser_rifle.xml"
+    inst.components.inventoryitem.imagename = "mauser_rifleb"
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/mauser_rifleb.xml"
 
 	inst:AddComponent("finiteuses")
-	inst.components.finiteuses:SetMaxUses(PARAMS.RIFLE_HP)
-	inst.components.finiteuses:SetUses(PARAMS.RIFLE_HP)
-	inst.components.finiteuses:SetOnFinished(OnBreak)
+	inst.onUpdate = function(inst)
+		local max = inst.components.finiteuses_mauser:GetMaxUses("bayonet")
+		local now = inst.components.finiteuses_mauser:GetUses("bayonet")
+		inst.components.finiteuses:SetMaxUses(max)
+		inst.components.finiteuses:SetUses(now)
+		inst.components.finiteuses:SetOnFinished(OnBreak)
+	end
+	inst:onUpdate()
 
 	inst:AddComponent("weapon")
-	inst.components.weapon:SetDamage(PARAMS.RIFLE_DMG_M * TUNING[PARAMS.RIFLE_M])
-	inst.components.weapon:SetRange(1, 1)
-
-	return inst
+	local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
+	inst.components.weapon:SetDamage(value)
+	inst.components.weapon:SetRange(1.75, 1.75)
+	inst.components.weapon:SetOnAttack(OnHit)
+    return inst
 end
 
-STRINGS.NAMES.MAUSER_GUNSTOCK	= "Dummy Rifle"
-STRINGS.RECIPE_DESC.MAUSER_GUNSTOCK	= "Dummy Mauser 98k"
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAUSER_GUNSTOCK	= "It is Dummy Rifle!"
+STRINGS.NAMES.MAUSER_GUNSTOCKB  = "Dummy Rifle With Bayonet"
+STRINGS.RECIPE_DESC.MAUSER_GUNSTOCKB  = "Long and Sharp Dummy Mauser 98k"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAUSER_GUNSTOCKB	= "This is Dummy Rifle with Long and Powerful Bayonet!"
 
-return Prefab( "mauser_gunstock", fn, assets, prefabs) 
+return Prefab( "mauser_gunstockb", fn, assets, prefabs)
