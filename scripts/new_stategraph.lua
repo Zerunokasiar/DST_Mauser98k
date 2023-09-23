@@ -402,7 +402,7 @@ local function postinit(self)
 					local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 					if equip and equip:HasTag("mauser_rifle") then
 						if equip:HasTag("mauser_switch") then return "rifle_action" end
-						return equip:HasTag("bayonet_action") and "bayonet_action" or "attack"
+						return equip:HasTag("bayonet_action") and equip:HasTag("mauser_boost") and "bayonet_action" or "attack"
 					end
 				end
 				return motion
@@ -420,7 +420,7 @@ local function postinitclient(self)
 					local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 					if equip and equip:HasTag("mauser_rifle") then
 						if equip:HasTag("mauser_switch") then return "rifle_action" end
-						return equip:HasTag("bayonet_action") and "bayonet_action" or "attack"
+						return equip:HasTag("bayonet_action") and equip:HasTag("mauser_boost") and "bayonet_action" or "attack"
 					end
 				end
 				return motion

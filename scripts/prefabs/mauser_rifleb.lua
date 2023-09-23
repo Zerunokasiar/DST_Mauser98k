@@ -271,11 +271,13 @@ local function OnDebuffSet(inst, owner)
 	local mult = PARAMS.MOVING_SPEED
 	local mult2 = mult * mult
 	inst.components.weapon:SetDamage(value / mult2)
+	inst:RemoveTag("bayonet_action")
 end
 
 local function OnDebuffReset(inst, owner)
 	local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
 	inst.components.weapon:SetDamage(value)
+	inst:AddTag("bayonet_action")
 end
 
 local function OnStartStarving(owner)
@@ -328,9 +330,10 @@ local function fn()
 	end
 
 	inst:AddTag("sharp")
+    inst:AddTag("pointy")
+    inst:AddTag("jab")
 	inst:AddTag("mauser_rifle")
-	inst:AddTag("bayonet_action")
-	inst:AddTag("whistle")
+	inst:AddTag(PARAMS.MAUSER_CHARGE_MOTION)
 	
 	inst.AnimBase = "swap_rifleb"
 	inst.AnimReset = "swap_mauser_rifleb_m"
@@ -417,7 +420,7 @@ local function fn()
 	inst.weapon_default = function(inst)
 		local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
 		inst.components.weapon:SetDamage(value)
-		inst.components.weapon:SetRange(1.75, 1.75)
+		inst.components.weapon:SetRange(2, 2)
 		inst.components.weapon:SetProjectile(nil)
 		inst.components.weapon:SetOnAttack(OnHit)
 		inst.components.weapon:SetOnProjectileLaunch(nil)

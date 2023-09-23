@@ -4,12 +4,20 @@ DS link : https://steamcommunity.com/sharedfiles/filedetails/?id=1506383724
 DST link(release) : https://steamcommunity.com/sharedfiles/filedetails/?id=955048205
 DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=1850492645
 
-[h1]1. Item List[/h1]
+[h1]Index[/h1]
+Items
+Stats
+Traits
+Recipes
+
+[h1]1. Items[/h1]
 
 [table]
 [tr][td]Mauser Ammo[/td][td]mauser_ammo[/td][/tr]
 [tr][td]Mauser Bayonet[/td][td]mauser_bayonet[/td][/tr]
-[tr][td]Dummy Rifle[/td][td]mauser_gunstock[/td][/tr]
+[tr][td]Mauser Gunstock[/td][td]mauser_gunstock[/td][/tr]
+[tr][td]Gunstock with Bayonet[/td][td]mauser_gunstockb[/td][/tr]
+[tr][td]Mauser Parts[/td][td]mauser_parts[/td][/tr]
 [tr][td]Mauser Rifle[/td][td]mauser_rifle[/td][/tr]
 [tr][td]Rifle with Bayonet[/td][td]mauser_rifleb[/td][/tr]
 [/table]
@@ -17,117 +25,243 @@ DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=18504
 [h1]2. Stats[/h1]
 
 [b]Mauser Ammo[/b]
+Just simple gun ammo.
+Used for ranged attack.
 [table]
 [tr][td]Stack Size[/td][td]Small Stack (40)[/td][/tr]
+[tr][td]Trait[/td][td]Reload[/td][/tr]
 [/table]
 
 [b]Mauser Bayonet[/b]
+Relatively long lasting weapon.
+It's also used pursuit of more strong power.
 [table]
 [tr][td]Attack[/td][td]34[/td][/tr]
 [tr][td]Range[/td][td]0[/td][/tr]
 [tr][td]Durability[/td][td]400[/td][/tr]
-[tr][td]Mobility[/td][td]100%[/td][/tr]
+[tr][td]Trait[/td][td]
+Charge
+Repair Bayonet
+[/td][/tr]
 [/table]
 
-[b]Dummy Rifle[/b]
+[b]Mauser Gunstock[/b]
+This is gun stock to need to make a gun.
+It has more effective power and range than spear, so emergency response is possible.
 [table]
 [tr][td]Attack[/td][td]51[/td][/tr]
 [tr][td]Range[/td][td]1[/td][/tr]
 [tr][td]Durability[/td][td]25[/td][/tr]
-[tr][td]Mobility[/td][td]100%[/td][/tr]
+[tr][td]Trait[/td][td]
+Charge
+Repair Gunstock
+[/td][/tr]
+[/table]
+
+[b]Gunstock with Bayonet[/b]
+It is model needed to make a gun.
+It boasts powerful such as pike by that equipped bayonet.
+[table]
+[tr][td]Attack[/td][td]68[/td][/tr]
+[tr][td]Range[/td][td]2[/td][/tr]
+[tr][td]Durability[/td][td]200[/td][/tr]
+[tr][td]Trait[/td][td]
+Charge
+Repair Bayonet
+Repair Gunstock
+Broken Bayonet
+[/td][/tr]
+[/table]
+
+[b]Mauser Parts[/b]
+It is essencial element of gun craft.
+It give range attack spec to mauser model.
+[table]
+[tr][td]특성[/td][td]
+[/td][/tr]
 [/table]
 
 [b]Mauser Rifle[/b]
+It's a gun that can attack from lang range.
+Emergency response is possible through melee/ranged attack changed.
 [table]
 [tr][td]Melee Attack[/td][td]51[/td][td]Ranged Attack[/td][td]120[/td][/tr]
 [tr][td]Hit Range[/td][td]1[/td][td]Fire Range[/td][td]15[/td][/tr]
 [tr][td]Durability[/td][td]25[/td][/tr]
-[tr][td]Mobility[/td][td]100%[/td][/tr]
 [tr][td]Maximum Clip[/td][td]5[/td][/tr]
+[tr][td]Trait[/td][td]
+Charge
+Instant Fire
+Change Mode
+Repair Gunstock
+Reload Ammo
+The Weapon for the Weak
+Additional Critical Hit
+Broken Gun
+[/td][/tr]
 [/table]
 
 [b]Rifle with Bayonet[/b]
+It's a gun about bayonet equipped.
+Provide strong combat performance with separate close combat motion.
 [table]
 [tr][td]Melee Attack[/td][td]68[/td][td]Ranged Attack[/td][td]120[/td][/tr]
-[tr][td]Hit Range[/td][td]1.75[/td][td]Fire Range[/td][td]15[/td][/tr]
-[tr][td]Durability[/td][td]100[/td][/tr]
-[tr][td]Mobility (Melee)[/td][td]125%[/td[td]Mobility (Ranged)[/td][td]80%[/td]][/tr]
+[tr][td]Hit Range[/td][td]2[/td][td]Fire Range[/td][td]15[/td][/tr]
+[tr][td]Durability[/td][td]200[/td][/tr]
 [tr][td]Maximum Clip[/td][td]5[/td][/tr]
+[tr][td]Trait[/td][td]
+Charge
+Instant Fire
+Change Mode
+Repair Bayonet
+Repair Gunstock
+Reload Ammo
+The weapon for the weak
+Additional critical hit
+Broken Bayonet
+[/td][/tr]
 [/table]
 
-[h1]2. Recipes[/h1]
+[h1]3. Traits[/h1]
+
+[b]Reload[/b]
+Action : Reload!
+[table]
+[tr][td]
+Fill ammo clip of equipped gun when reload.
+[/td][/tr]
+[/table]
+
+[b]Charge[/b]
+Action : Charge!
+[table]
+[tr][td]
+When charge, move 40% faster and consume hunger 96% faster.
+If hunger is 0 when charge, damage reduce about 50% down.
+It has faster attack timing than normal if hunger is not zero when bayonet is equipped. 
+[/td][/tr]
+[/table]
+
+[b]Instant Fire[/b]
+Action : Fire!
+[table]
+[tr][td]
+Rapidly ranged attack when melee mode.
+Attack range is short than ranged attack mode, it can be miss when enemy is moving or too close. 
+When enemy exist near mouse point, action is displayed.
+If controller, when enemy exist in range from self, action is displayed.
+[/td][/tr]
+[/table]
+
+[b]Change Mode[/b]
+Action : Use
+[table]
+[tr][td]
+Switch melee attack mode or ranged attack mode.
+Ranged attack mode cannot melee attack, but pre-aiming is faster.
+If gun clip is empty, cannot change to ranged attack mode.
+[/td][/tr]
+[/table]
+
+[b]Repair Bayonet[/b]
+Action : Give
+[table]
+[tr][td]
+Repair as durability of provided bayonet.
+If durability is limit over, bayonet's durability is only reduce, not removed.
+[/td][/tr]
+[/table]
+
+[b]Repair Gunstock[/b]
+Action : Give
+[table]
+[tr][td]
+Repair as durability of provided gunstock.
+If durability is limit over, gunstock's durability is only reduce, not removed.
+[/td][/tr]
+[/table]
+
+[b]Reload Ammo[/b]
+Action : Give
+[table]
+[tr][td]
+Refill gun as stack of provided ammo.
+If clip is limit over, remaining ammo is return.
+[/td][/tr]
+[/table]
+
+[b]The weapon for the weak[/b]
+[table]
+[tr][td]
+In case of ranged attack, damage rate is calibrated to 1.
+[/td][/tr]
+[/table]
+
+[b]Additional critical hit[/b]
+[table]
+[tr][td]
+Add n/2 damage rate if damage multiplier is over than n when ranged attack.
+ex) Damage Rate 1.2 > Additional Damage Rate 0.1
+[/td][/tr]
+[/table]
+
+[b]Broken Gun[/b]
+[table]
+[tr][td]
+If durability is 0, gun is gone.
+When broken, ammo spread near character if gun clip is not empty.
+[/td][/tr]
+[/table]
+
+[b]Broken Bayonet[/b]
+[table]
+[tr][td]
+If durability is 0, bayonet is broken.
+It return to gun without bayonet, gunstock durability and reloaded ammo is preserved.
+[/td][/tr]
+[/table]
+
+[h1]4. Recipes[/h1]
 
 [b]Mauser Ammo[/b]
 [table]
-[tr][td]Gold Nugget[/td][td]1[/td][td]Gunpowder[/td][td]1[/td][td]Papyrus[/td][td]1[/td][/tr]
-[tr][td]Mauser Ammo[/td][td]5[/td][/tr]
+[tr][td]Science Tier2[/td][td][/td][td]Gold Nugget[/td][td]1[/td][td]Gunpowder[/td][td]1[/td][td]Papyrus[/td][td]1[/td][/tr]
+[tr][td]Result[/td][td][/td][td]Mauser Ammo[/td][td]5[/td][/tr]
 [/table]
 
 [b]Mauser Bayonet[/b]
 [table]
-[tr][td]Marble[/td][td]1[/td][td]Rope[/td][td]1[/td][td]Twigs[/td][td]1[/td][/tr]
-[tr][td]Mauser Bayonet[/td][td]1[/td][/tr]
+[tr][td]Science Tier1[/td][td][/td][td]Marble[/td][td]1[/td][td]Rope[/td][td]1[/td][td]Twigs[/td][td]1[/td][/tr]
+[tr][td]Result[/td][td][/td][td]Mauser Bayonet[/td][td]1[/td][/tr]
 [/table]
 
-[b]Dummy Rifle[/b]
+[b]Mauser Gunstock[/b]
 [table]
-[tr][td]Boards[/td][td]5[/td][/tr]
-[tr][td]Dummy Rifle[/td][td]1[/td][/tr]
+[tr][td]Science Tier1[/td][td][/td][td]Boards[/td][td]5[/td][/tr]
+[tr][td]Result[/td][td][/td][td]Mauser Gunstock[/td][td]1[/td][/tr]
 [/table]
 
-[b]Mauser Rifle[/b]
+[b]Gunstock with Bayonet[/b]
 [table]
-[tr][td]Gold Nugget[/td][td]10[/td][td]Gears[/td][td]2[/td][td]Dummy Rifle[/td][td]1[/td][/tr]
-[tr][td]Mauser Rifle[/td][td]1[/td][/tr]
+[tr][td]Give[/td][td][/td][td]Mauser Bayonet[/td][td]<<[/td][td]Mauser Bayonet[/td][/tr]
+[tr][td]Result[/td][td][/td][td]Gunstock with Bayonet[/td][/tr]
 [/table]
 
-[h1]3. Features[/h1]
-
-[b]Mauser Bayonet[/b]
+[b]Mauser Parts[/b]
 [table]
-[tr][td]
-Mauser Bayonet is not effective itself.
-Mauser Bayonet is able to repair with other Mauser Bayonet.
-[/td][/tr]
-[/table]
-
-[b]Dummy Rifle[/b]
-[table]
-[tr][td]
-Dummy Rifle is not able to ranged attack.
-Effective damage and range than spear, but weak durability. 
-Dummy Rifle is able to repair with other Dummy Rifle.
-[/td][/tr]
+[tr][td]Science Tier2[/td][td][/td][td]Gold Nugget[/td][td]10[/td][td]Gears[/td][td]2[/td][/tr]
+[tr][td]Result[/td][td][/td][td]Mauser Parts[/td][td]1[/td][/tr]
 [/table]
 
 [b]Mauser Rifle[/b]
 [table]
-[tr][td]
-Melee/Ranged Mode is translated when rifle is click with right button.
-If target is exist near mouse when Ranged Mode, "Fire!" is visible.
-If "Fire!" is visible, it is possible to ranged attack without aim. (Auto-Aim System)
-But Auto-Aim case, range is little shorter than normal ranged attack.
-If you give bullets to Mauser Rifle, Mauser Rifle can fill full with bullets at once.
-Mauser Rifle is able to repair with Dummy Rifle.
-[/td][/tr]
+[tr][td]Give[/td][td][/td][td]Mauser Gunstock[/td][td]<<[/td][td]Mauser Parts[/td][/tr]
+[tr][td]Result[/td][td][/td][td]Mauser Rifle[/td][/tr]
 [/table]
 
 [b]Rifle with Bayonet[/b]
 [table]
-[tr][td]
-The working principle is the same as the Mauser Rifle.
-If you give Mauser Bayonet to Mauser Rifle, it becomes Rifle with Bayonet.
-It also able Auto-Aim when Melee Mode.
-Rifle with Bayonet is able to repair with Mauser Bayonet.
-Rifle with Bayonet when broken, it return Rifle.
-[/td][/tr]
-[/table]
-
-[b]Mauser Ammo[/b]
-[table]
-[tr][td]
-It is just a ammo for rifle.
-But It is not need to drag&drop to Rifle.
-When right click to Mauser Ammo, equipped rifle is recharge 1 ammo.
-[/td][/tr]
+[tr][td]Give[/td][td][/td][td]Mauser Rifle[/td][td]<<[/td][td]Mauser Bayonet[/td][/tr]
+[tr][td]Give[/td][td][/td][td]Gunstock with Bayonet[/td][td]<<[/td][td]Mauser Parts[/td][/tr]
+[tr][td]Result[/td][td][/td][td]Rifle with Bayonet[/td][/tr]
 [/table]

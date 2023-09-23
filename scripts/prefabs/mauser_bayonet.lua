@@ -106,7 +106,7 @@ local function fn()
 	end
 	
 	inst:AddTag("sharp")
-	inst:AddTag("whistle")
+	inst:AddTag(PARAMS.MAUSER_CHARGE_MOTION)
 	inst.BoostOn = BoostOn
 	inst.BoostOff = BoostOff
 	

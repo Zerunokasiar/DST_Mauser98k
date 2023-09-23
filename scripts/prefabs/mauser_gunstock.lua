@@ -158,7 +158,7 @@ local function fn()
 		MakeInventoryFloatable(inst, "med", 0.05, {0.75, 0.4, 0.75})
 	end
 
-	inst:AddTag("whistle")
+	inst:AddTag(PARAMS.MAUSER_CHARGE_MOTION)
 	inst.BoostOn = BoostOn
 	inst.BoostOff = BoostOff
 
@@ -202,8 +202,8 @@ local function fn()
 	return inst
 end
 
-STRINGS.NAMES.MAUSER_GUNSTOCK	= "Dummy Rifle"
-STRINGS.RECIPE_DESC.MAUSER_GUNSTOCK	= "Dummy Mauser 98k"
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAUSER_GUNSTOCK	= "It is Dummy Rifle!"
+STRINGS.NAMES.MAUSER_GUNSTOCK	= "Mauser Gunstock"
+STRINGS.RECIPE_DESC.MAUSER_GUNSTOCK	= "Gunstock of Mauser 98k"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAUSER_GUNSTOCK	= "It is Gunstock!"
 
 return Prefab( "mauser_gunstock", fn, assets, prefabs) 

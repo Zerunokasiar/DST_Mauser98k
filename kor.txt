@@ -13,16 +13,18 @@ DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=18504
 [h1]1. 아이템 종류[/h1]
 
 [table]
-[tr][td]마우저 탄[/td][td]mauser_ammo[/td][/tr]
+[tr][td]마우저 총탄[/td][td]mauser_ammo[/td][/tr]
 [tr][td]마우저 총검[/td][td]mauser_bayonet[/td][/tr]
-[tr][td]총기 외형[/td][td]mauser_gunstock[/td][/tr]
+[tr][td]마우저 모형[/td][td]mauser_gunstock[/td][/tr]
+[tr][td]착검 모형[/td][td]mauser_gunstockb[/td][/tr]
+[tr][td]마우저 부품[/td][td]mauser_parts[/td][/tr]
 [tr][td]마우저 소총[/td][td]mauser_rifle[/td][/tr]
 [tr][td]착검 소총[/td][td]mauser_rifleb[/td][/tr]
 [/table]
 
 [h1]2. 요약[/h1]
 
-[b]마우저 탄[/b]
+[b]마우저 총탄[/b]
 단순한 소총탄약입니다.
 원거리 공격에 사용됩니다.
 [table]
@@ -43,9 +45,9 @@ DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=18504
 [/td][/tr]
 [/table]
 
-[b]총기 외형[/b]
+[b]마우저 모형[/b]
 총기 제작에 필요한 외형입니다.
-창보다 효과적인 위력과 사거리를 가져 긴급 대응이 가능합니다.
+때리기 좋은 형태를 가져 긴급 대응이 가능합니다.
 [table]
 [tr][td]공격력[/td][td]51[/td][/tr]
 [tr][td]사거리[/td][td]1[/td][/tr]
@@ -53,6 +55,29 @@ DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=18504
 [tr][td]특성[/td][td]
 돌격
 외형수리
+[/td][/tr]
+[/table]
+
+[b]착검 모형[/b]
+총기 제작에 필요한 외형입니다.
+총검을 달아 장창과 같은 위력을 자랑합니다.
+[table]
+[tr][td]공격력[/td][td]68[/td][/tr]
+[tr][td]사거리[/td][td]2[/td][/tr]
+[tr][td]내구도[/td][td]200[/td][/tr]
+[tr][td]특성[/td][td]
+돌격
+총검수리
+외형수리
+총검유실
+[/td][/tr]
+[/table]
+
+[b]마우저 부품[/b]
+총기 제작에 필요한 핵심 요소입니다.
+모형에 불과한 무기에 원거리 기능을 부여합니다.
+[table]
+[tr][td]특성[/td][td]
 [/td][/tr]
 [/table]
 
@@ -81,8 +106,8 @@ DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=18504
 별도의 근접전 모션과 함께 강력한 근접전 성능을 제공합니다.
 [table]
 [tr][td]근접전 공격력[/td][td]68[/td][td]원거리 공격력[/td][td]120[/td][/tr]
-[tr][td]근접전 사거리[/td][td]1.75[/td][td]원거리 사거리[/td][td]15[/td][/tr]
-[tr][td]내구도[/td][td]100[/td][/tr]
+[tr][td]근접전 사거리[/td][td]2[/td][td]원거리 사거리[/td][td]15[/td][/tr]
+[tr][td]내구도[/td][td]200[/td][/tr]
 [tr][td]최대탄창[/td][td]5[/td][/tr]
 [tr][td]특성[/td][td]
 돌격
@@ -113,6 +138,7 @@ DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=18504
 [tr][td]
 돌격 시 40% 더 빠르게 이동하지만, 허기를 96% 더 빠르게 소모합니다.
 발동 상태에서 허기가 0이 되면 공격력이 약 50% 감소합니다.
+총검이 달린 상태에서 허기가 0이 아닌 경우 보다 빠른 공격을 합니다.
 [/td][/tr]
 [/table]
 
@@ -183,7 +209,7 @@ ex) 공격력 배율 1.2 > 추가 공격력 배율 0.1
 [table]
 [tr][td]
 내구도가 0이 되면 총기가 부셔집니다.
-부셔질 때 탄약이 장전되어있는 경우 주변으로 탄약을 뿌립니다.
+부셔질 때 기어1개가 뿌려지며, 탄약이 장전되어있는 경우 주변으로 탄약을 뿌립니다.
 [/td][/tr]
 [/table]
 
@@ -197,26 +223,45 @@ ex) 공격력 배율 1.2 > 추가 공격력 배율 0.1
 
 [h1]4. 제조법[/h1]
 
-[b]마우저 탄[/b]
+[b]마우저 총탄[/b]
 [table]
-[tr][td]금[/td][td]1[/td][td]화약[/td][td]1[/td][td]종이[/td][td]1[/td][/tr]
-[tr][td]마우저 탄[/td][td]5[/td][/tr]
+[tr][td]과학2[/td][td][/td][td]금[/td][td]1[/td][td]화약[/td][td]1[/td][td]종이[/td][td]1[/td][/tr]
+[tr][td]Result[/td][td][/td][td]마우저 총탄[/td][td]5[/td][/tr]
 [/table]
 
 [b]마우저 총검[/b]
 [table]
-[tr][td]대리석[/td][td]1[/td][td]밧줄[/td][td]1[/td][td]가지[/td][td]1[/td][/tr]
-[tr][td]마우저 총검[/td][td]1[/td][/tr]
+[tr][td]과학1[/td][td][/td][td]대리석[/td][td]1[/td][td]밧줄[/td][td]1[/td][td]가지[/td][td]1[/td][/tr]
+[tr][td]Result[/td][td][/td][td]마우저 총검[/td][td]1[/td][/tr]
 [/table]
 
-[b]총기 외형[/b]
+[b]마우저 모형[/b]
 [table]
-[tr][td]판자[/td][td]5[/td][/tr]
-[tr][td]총기 외형[/td][td]1[/td][/tr]
+[tr][td]과학1[/td][td][/td][td]판자[/td][td]5[/td][/tr]
+[tr][td]Result[/td][td][/td][td]마우저 모형[/td][td]1[/td][/tr]
+[/table]
+
+[b]착검 모형[/b]
+[table]
+[tr][td]Give[/td][td][/td][td]마우저 모형[/td][td]<<[/td][td]마우저 총검[/td][/tr]
+[tr][td]Result[/td][td][/td][td]착검 모형[/td][/tr]
+[/table]
+
+[b]마우저 부품[/b]
+[table]
+[tr][td]과학2[/td][td][/td][td]금[/td][td]10[/td][td]부품[/td][td]2[/td][/tr]
+[tr][td]Result[/td][td][/td][td]마우저 부품[/td][td]1[/td][/tr]
 [/table]
 
 [b]마우저 소총[/b]
 [table]
-[tr][td]금[/td][td]10[/td][td]부품[/td][td]2[/td][td]총기 외형[/td][td]1[/td][/tr]
-[tr][td]마우저 소총[/td][td]1[/td][/tr]
+[tr][td]Give[/td][td][/td][td]마우저 모형[/td][td]<<[/td][td]마우저 부품[/td][/tr]
+[tr][td]Result[/td][td][/td][td]마우저 소총[/td][/tr]
+[/table]
+
+[b]착검 소총[/b]
+[table]
+[tr][td]Give[/td][td][/td][td]마우저 소총[/td][td]<<[/td][td]마우저 총검[/td][/tr]
+[tr][td]Give[/td][td][/td][td]착검 모형[/td][td]<<[/td][td]마우저 부품[/td][/tr]
+[tr][td]Result[/td][td][/td][td]착검 소총[/td][/tr]
 [/table]

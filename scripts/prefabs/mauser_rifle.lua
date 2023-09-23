@@ -335,7 +335,7 @@ local function fn()
 	end
 	
 	inst:AddTag("mauser_rifle")
-	inst:AddTag("whistle")
+	inst:AddTag(PARAMS.MAUSER_CHARGE_MOTION)
 
 	inst.AnimBase = "swap_rifle"
 	inst.AnimReset = "swap_mauser_rifle_m"

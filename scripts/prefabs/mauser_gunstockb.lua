@@ -114,11 +114,13 @@ local function OnDebuffSet(inst, owner)
 	local mult = PARAMS.MOVING_SPEED
 	local mult2 = mult * mult
 	inst.components.weapon:SetDamage(value / mult2)
+	inst:RemoveTag("bayonet_action")
 end
 
 local function OnDebuffReset(inst, owner)
 	local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
 	inst.components.weapon:SetDamage(value)
+	inst:AddTag("bayonet_action")
 end
 
 local function OnStartStarving(owner)
@@ -171,9 +173,10 @@ local function fn()
 	end
 
 	inst:AddTag("sharp")
-	inst:AddTag("jab")
-	inst:AddTag("pointy")
-	inst:AddTag("whistle")
+    inst:AddTag("pointy")
+    inst:AddTag("jab")
+	inst:AddTag("mauser_rifle")
+	inst:AddTag(PARAMS.MAUSER_CHARGE_MOTION)
 	inst.BoostOn = BoostOn
 	inst.BoostOff = BoostOff
 	
@@ -222,13 +225,13 @@ local function fn()
 	inst:AddComponent("weapon")
 	local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
 	inst.components.weapon:SetDamage(value)
-	inst.components.weapon:SetRange(1.75, 1.75)
+	inst.components.weapon:SetRange(2, 2)
 	inst.components.weapon:SetOnAttack(OnHit)
     return inst
 end
 
-STRINGS.NAMES.MAUSER_GUNSTOCKB  = "Dummy Rifle With Bayonet"
-STRINGS.RECIPE_DESC.MAUSER_GUNSTOCKB  = "Long and Sharp Dummy Mauser 98k"
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAUSER_GUNSTOCKB	= "This is Dummy Rifle with Long and Powerful Bayonet!"
+STRINGS.NAMES.MAUSER_GUNSTOCKB  = "Gunstock With Bayonet"
+STRINGS.RECIPE_DESC.MAUSER_GUNSTOCKB  = "Long and Sharp Gunstock"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAUSER_GUNSTOCKB	= "This is Gunstock with Long and Powerful Bayonet!"
 
 return Prefab( "mauser_gunstockb", fn, assets, prefabs)
