@@ -340,6 +340,8 @@ local function fn()
 	inst.AnimBase = "swap_rifle"
 	inst.AnimReset = "swap_mauser_rifle_m"
 	inst.AnimSet = "swap_mauser_rifle_r"
+	inst.OnAnimSet = OnAnimSet
+	inst.OnAnimReset = OnAnimReset
 	inst.OnDefault = OnDefault
 	inst.OnSwitch = OnSwitch
 	inst.CanFire = CanFire

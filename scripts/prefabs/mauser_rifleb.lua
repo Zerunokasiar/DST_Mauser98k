@@ -341,6 +341,7 @@ local function fn()
 	inst.OnAnimSet = OnAnimSet
 	inst.OnAnimReset = OnAnimReset
 	inst.OnDefault = OnDefault
+	inst.OnSwitch = OnSwitch
 	inst.CanFire = CanFire
 	inst.OnFire = OnFire
 	inst.BoostOn = BoostOn
