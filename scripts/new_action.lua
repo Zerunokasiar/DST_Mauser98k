@@ -4,7 +4,7 @@ STRINGS = GLOBAL.STRINGS
 ACTIONS = GLOBAL.ACTIONS
 TheSim = TheSim or GLOBAL.TheSim
 
-local MAUSER_CHARGE = Action({ rmb=true, mount_valid=true, distance=math.huge})
+local MAUSER_CHARGE = Action({ priority = -10, rmb=true, mount_valid=true, distance=math.huge})
 MAUSER_CHARGE.str = "Mauser Charge"
 MAUSER_CHARGE.id = "MAUSER_CHARGE"
 MAUSER_CHARGE.fn = function(act)
