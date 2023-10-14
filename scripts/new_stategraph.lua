@@ -250,6 +250,8 @@ RIFLE_CAV_ACTION.ONENTER = function(inst)
 	inst.AnimState:OverrideSymbol("swap_object", equip.AnimSet, equip.AnimBase)
 	if inst.components.combat then
 		inst.components.combat:SetTarget(target)
+	else
+		inst:PerformPreviewBufferedAction()
 	end
 	combat:StartAttack()
 	inst.components.locomotor:Stop()
@@ -257,14 +259,11 @@ RIFLE_CAV_ACTION.ONENTER = function(inst)
 	inst.AnimState:PlayAnimation("dart_pre")
 	inst.AnimState:PushAnimation("hit", false)
 	
-	inst.sg:SetTimeout(18 * FRAMES)
-	-- if not inst.components.combat then
-		inst:PerformPreviewBufferedAction()
-	-- end
-	if target ~= nil and target:IsValid() then
+	if target and target:IsValid() then
 		inst:FacePoint(target.Transform:GetWorldPosition())
 		inst.sg.statemem.attacktarget = target
 	end
+	inst.sg:SetTimeout(15 * FRAMES)
 end
 RIFLE_CAV_ACTION.ONTIMEOUT = function(inst)
 	inst.sg:RemoveStateTag("attack")
@@ -457,7 +456,13 @@ local function RangedAction(inst, action)
 		local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 		if equip and equip:HasTag("mauser_rifle") then
 			local rider = inst.components.rider or inst.replica.rider
-			return rider and rider:IsRiding() and "rifle_cav_action" or "rifle_instant_action"
+			if rider and rider:IsRiding() then
+				return "rifle_cav_action"
+			elseif equip and equip:HasTag("mauser_switch") then
+				return "rifle_action"
+			else
+				return "rifle_instant_action"
+			end
 		end
 	end
 end
@@ -481,6 +486,9 @@ local function postinit(self)
 					if equip and equip:HasTag("mauser_action") and not riding then
 						if equip:HasTag("mauser_switch") then return "rifle_action" end
 						return equip:HasTag("bayonet_action") and equip:HasTag("mauser_boost") and "bayonet_action" or "attack"
+					end
+					if equip and equip:HasTag("mauser_switch") and riding then
+						return "rifle_cav_action"
 					end
 				end
 				return motion

@@ -31,7 +31,8 @@ local function OnEquip(inst, owner)
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
 	inst.components.boostable_mauser:BoostOff(owner)
-	if inst.components.finiteuses_mauser:GetUses("ammo") > 0 then
+	local rider = owner.components.rider:IsRiding()
+	if rider or inst.components.finiteuses_mauser:GetUses("ammo") > 0 then
 		OnAnimSet(inst, owner)
 		inst:OnSwitch()
 	else
@@ -149,7 +150,7 @@ local function OnBreak(inst)
 end
 
 local function CanFire(inst, doer, target, pos)
-	if not doer.components.combat:CanTarget(target) then
+	if not doer.components.combat:CanTarget(target) or doer.components.combat:IsAlly(target) then
 		target = FUNCS.FindTarget(doer, pos or target:GetPosition())
 	end
 	local flag = target ~= nil
@@ -162,7 +163,7 @@ local function CanFire(inst, doer, target, pos)
 end
 
 local function OnFire(inst, doer, target, pos, homing)
-	if not doer.components.combat:CanTarget(target) then
+	if not doer.components.combat:CanTarget(target) or doer.components.combat:IsAlly(target) then
 		target = FUNCS.FindTarget(doer, pos or target:GetPosition())
 	end
 	local proj = SpawnPrefab("mauser_bullet")
@@ -190,8 +191,11 @@ local function Firefn(inst, doer, target, pos)
 	if CanFire(inst, doer, target, pos) then
 		OnFire(inst, doer, target, pos, true)
 	elseif doer and doer.components.talker then
-		doer.components.talker:Say("Run out of ammo!")
-		if inst:HasTag("mauser_switch") then inst.components.finiteuses:SetUses(1) end
+		if not doer.components.combat:CanTarget(target) or doer.components.combat:IsAlly(target) then
+			doer.components.talker:Say("Cannot fired target!")
+		else
+			doer.components.talker:Say("Run out of ammo!")
+		end
 	end
 end
 
@@ -202,6 +206,7 @@ end
 local function OnDefault(inst)
 	inst.name = "Mauser Rifle"
 	inst:RemoveTag("mauser_switch")
+	inst:RemoveTag("rangedweapon")
 	inst:inventoryitem_default()
 	inst:finiteuses_default()
 	inst:weapon_default()
@@ -210,6 +215,7 @@ end
 local function OnSwitch(inst)
 	inst.name = "Mauser Rifle (Ranged)"
 	inst:AddTag("mauser_switch")
+	inst:AddTag("rangedweapon")
 	inst:inventoryitem_switch()
 	inst:finiteuses_switch()
 	inst:weapon_switch()
@@ -258,6 +264,8 @@ local function OnMounted(owner)
 	if inst:HasTag("mauser_boost") then
 		inst.components.boostable_mauser:BoostOff(owner)
 	end
+	OnAnimSet(inst, owner)
+	inst:OnSwitch()
 end
 
 local function BoostOn(inst, owner)

@@ -5,7 +5,7 @@ ACTIONS = GLOBAL.ACTIONS
 TheSim = TheSim or GLOBAL.TheSim
 
 local MAUSER_CHARGE = Action({ priority = -2, rmb = true, distance = math.huge})
-MAUSER_CHARGE.str = "Mauser Charge"
+MAUSER_CHARGE.str = "Charge!"
 MAUSER_CHARGE.id = "MAUSER_CHARGE"
 MAUSER_CHARGE.fn = function(act)
 	local weapon = act.invobject
@@ -17,7 +17,7 @@ end
 
 local range = PARAMS.RANGE * PARAMS.AUTORANGE
 local MAUSER_RANGED = Action({ priority = 2, rmb = true, distance = range, mount_valid = true })
-MAUSER_RANGED.str = "Mauser Ranged"
+MAUSER_RANGED.str = "Fire!"
 MAUSER_RANGED.id = "MAUSER_RANGED"
 MAUSER_RANGED.fn = function(act)
 	local staff = act.invobject
@@ -43,7 +43,7 @@ MAUSER_RANGED.fn = function(act)
 end
 
 local MAUSER_RELOAD = Action({ rmb = true, mount_valid = true, canforce = true })
-MAUSER_RELOAD.str = "Mauser Reload"
+MAUSER_RELOAD.str = "Reload!"
 MAUSER_RELOAD.id = "MAUSER_RELOAD"
 MAUSER_RELOAD.fn = function(act)
 	if act.invobject and
@@ -56,38 +56,20 @@ end
 AddAction(MAUSER_CHARGE)
 AddAction(MAUSER_RANGED)
 AddAction(MAUSER_RELOAD)
-STRINGS.ACTIONS.MAUSER_CHARGE = {GENERIC = "Charge!"}
-STRINGS.ACTIONS.MAUSER_RANGED = {GENERIC = "Fire!"}
-STRINGS.ACTIONS.MAUSER_RELOAD = {GENERIC = "Reload"}
 
 local function autoaim_point(inst, doer, pos, actions, right)
 	if not right then return end
-	-- if inst:HasTag("mauser_switch") then return end
+	if not inst:HasTag("mauser_rifle") then return end
 	local target = FUNCS.FindTarget(doer, pos)
 	if target then
 		actions.target = target
 		table.insert(actions, ACTIONS.MAUSER_RANGED)
 	end
-	-- local x, y, z = pos:Get()
-	-- local range = PARAMS.AUTOAIM
-	-- if doer.components.playercontroller.isclientcontrollerattached then
-	-- 	range = PARAMS.RANGE * PARAMS.AUTORANGE
-	-- end
-	-- local ents = TheSim:FindEntities(x, y, z, range)
-	-- for k,v in pairs(ents) do
-	-- 	local flag = doer.replica.combat
-	-- 	flag = flag and flag:CanTarget(v) and not flag:IsAlly(v)
-	-- 	if flag then
-	-- 		actions.target = v
-	-- 		table.insert(actions, ACTIONS.MAUSER_RANGED)
-	-- 		return
-	-- 	end
-	-- end
 end
 
 local function autoaim_target(inst, doer, target, actions, right)
 	if not right then return end
-	-- if inst:HasTag("mauser_switch") then return end
+	if not inst:HasTag("mauser_rifle") then return end
 	local flag = doer.replica.combat
 	flag = flag and flag:CanTarget(target) and not flag:IsAlly(target)
 	if flag then
