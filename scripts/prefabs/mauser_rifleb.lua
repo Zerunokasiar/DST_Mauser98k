@@ -190,7 +190,6 @@ end
 local function OnDefault(inst)
 	inst.name = "Rifle With Bayonet"
 	inst:RemoveTag("mauser_switch")
-	inst:equippable_default()
 	inst:inventoryitem_default()
 	inst:finiteuses_default()
 	inst:weapon_default()
@@ -199,7 +198,6 @@ end
 local function OnSwitch(inst)
 	inst.name = "Rifle With Bayonet (Ranged)"
 	inst:AddTag("mauser_switch")
-	inst:equippable_switch()
 	inst:inventoryitem_switch()
 	inst:finiteuses_switch()
 	inst:weapon_switch()
@@ -312,6 +310,7 @@ local function fn()
     inst:AddTag("pointy")
     inst:AddTag("jab")
 	inst:AddTag("mauser_rifle")
+	inst:AddTag("mauser_action")
 	inst:AddTag(PARAMS.MAUSER_CHARGE_MOTION)
 	
 	inst.AnimBase = "swap_rifleb"
@@ -336,13 +335,6 @@ local function fn()
 	inst:AddComponent("equippable")
 	inst.components.equippable:SetOnEquip(OnEquip)
 	inst.components.equippable:SetOnUnequip(OnUnequip)
-	inst.equippable_default = function(inst)
-		inst.components.equippable.walkspeedmult = 1.0
-	end
-	inst.equippable_switch = function(inst)
-		inst.components.equippable.walkspeedmult = 1.0
-	end
-	inst:equippable_default()
 
 	CanReloadfn(inst)
 	OnReloadfn(inst)

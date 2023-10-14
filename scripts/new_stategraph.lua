@@ -58,7 +58,7 @@ end
 RIFLE_ACTION.ONEXIT = function(inst)
 	local inventory = inst.components.inventory or inst.replica.inventory
 	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
+	if equip and not equip:HasTag("mauser_switch") then
 		inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
 	end
 	if inst.components.combat then
@@ -164,7 +164,7 @@ end
 RIFLE_INSTANT_ACTION.ONEXIT = function(inst)
 	local inventory = inst.components.inventory or inst.replica.inventory
 	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
+	if equip and not equip:HasTag("mauser_switch") then
 		inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
 	end
 	if inst.components.combat then
@@ -273,7 +273,7 @@ end
 RIFLE_CAV_ACTION.ONEXIT = function(inst)
 	local inventory = inst.components.inventory or inst.replica.inventory
 	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
+	if equip and not equip:HasTag("mauser_switch") then
 		inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
 	end
 	if inst.components.combat then
@@ -446,47 +446,24 @@ AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.MAUSER_CHARGE, Charge
 AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.MAUSER_CHARGE, ChargeAction))
 
 local function RangedAction(inst, action)
-	inst.sg.mem.localchainattack = not action.forced or nil
 	local playercontroller = inst.components.playercontroller
-	local attack_tag =
-				playercontroller ~= nil and
-				playercontroller.remote_authority and
-				playercontroller.remote_predicting and
-				"abouttoattack" or
-				"attack"
-	if not (inst.sg:HasStateTag(attack_tag)
-	-- and action.target == inst.sg.statemem.attacktarget
-	or inst.components.health:IsDead())
-	then
-		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
-		local flag = equip:HasTag("mauser_rifle")
-		local ride = inst.components.rider:IsRiding()
-		-- flag = flag and not equip:HasTag("mauser_switch")
-		if flag then
-			return ride and "rifle_cav_action" or "rifle_instant_action"
+	local remote = playercontroller ~= nil
+	remote = remote and playercontroller.remote_authority
+	remote = remote and playercontroller.remote_predicting
+	local tag = remote and "abouttoattack" or "attack"
+	local health = inst.components.health or inst.replica.health
+	if not inst.sg:HasStateTag(tag) and not health:IsDead() then
+		local inventory = inst.components.inventory or inst.replica.inventory
+		local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+		if equip and equip:HasTag("mauser_rifle") then
+			local rider = inst.components.rider or inst.replica.rider
+			return rider and rider:IsRiding() and "rifle_cav_action" or "rifle_instant_action"
 		end
-		return nil
-	end
-end
-
-local function RangedActionClient(inst, action)
-	if not (inst.sg:HasStateTag("attack")
-	-- and action.target == inst.sg.statemem.attacktarget
-	or inst.replica.health:IsDead())
-	then
-		local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
-		local flag = equip:HasTag("mauser_rifle")
-		local ride = inst.replica.rider:IsRiding()
-		-- flag = flag and not equip:HasTag("mauser_switch")
-		if flag then
-			return ride and "rifle_cav_action" or "rifle_instant_action"
-		end
-		return nil
 	end
 end
 
 AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.MAUSER_RANGED, RangedAction))
-AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.MAUSER_RANGED, RangedActionClient))
+AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.MAUSER_RANGED, RangedAction))
 AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.MAUSER_RELOAD, "give"))
 AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.MAUSER_RELOAD, "give"))
 
@@ -497,28 +474,11 @@ local function postinit(self)
 			v.deststate = function(inst, action)
 				local motion = oldaction(inst, action)
 				if motion == "attack" then
-					local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-					local rider = inst.components.rider:IsRiding()
-					if equip and equip:HasTag("mauser_rifle") and not rider then
-						if equip:HasTag("mauser_switch") then return "rifle_action" end
-						return equip:HasTag("bayonet_action") and equip:HasTag("mauser_boost") and "bayonet_action" or "attack"
-					end
-				end
-				return motion
-			end
-		end
-	end
-end
-local function postinitclient(self)
-	for k,v in pairs(self.actionhandlers) do
-		if v.action.id == "ATTACK" then
-			local oldaction = v.deststate
-			v.deststate = function(inst, action)
-				local motion = oldaction(inst, action)
-				if motion == "attack" then
-					local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-					local rider = inst.replica.rider:IsRiding()
-					if equip and equip:HasTag("mauser_rifle") and not rider then
+					local inventory = inst.components.inventory or inst.replica.inventory
+					local equip = inventory and inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+					local rider = inst.components.rider or inst.replica.rider
+					local riding = rider and rider:IsRiding()
+					if equip and equip:HasTag("mauser_action") and not riding then
 						if equip:HasTag("mauser_switch") then return "rifle_action" end
 						return equip:HasTag("bayonet_action") and equip:HasTag("mauser_boost") and "bayonet_action" or "attack"
 					end
@@ -529,4 +489,4 @@ local function postinitclient(self)
 	end
 end
 AddStategraphPostInit("wilson", postinit)
-AddStategraphPostInit("wilson_client",postinitclient)
+AddStategraphPostInit("wilson_client",postinit)

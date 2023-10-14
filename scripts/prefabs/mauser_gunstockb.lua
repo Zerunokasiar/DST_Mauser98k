@@ -189,7 +189,7 @@ local function fn()
 	inst:AddTag("sharp")
     inst:AddTag("pointy")
     inst:AddTag("jab")
-	inst:AddTag("mauser_rifle")
+	inst:AddTag("mauser_action")
 	inst:AddTag(PARAMS.MAUSER_CHARGE_MOTION)
 	
 	if TheSim:GetGameID() == "DST" then

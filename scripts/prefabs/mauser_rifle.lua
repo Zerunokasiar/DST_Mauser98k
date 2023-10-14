@@ -202,7 +202,6 @@ end
 local function OnDefault(inst)
 	inst.name = "Mauser Rifle"
 	inst:RemoveTag("mauser_switch")
-	inst:equippable_default()
 	inst:inventoryitem_default()
 	inst:finiteuses_default()
 	inst:weapon_default()
@@ -211,7 +210,6 @@ end
 local function OnSwitch(inst)
 	inst.name = "Mauser Rifle (Ranged)"
 	inst:AddTag("mauser_switch")
-	inst:equippable_switch()
 	inst:inventoryitem_switch()
 	inst:finiteuses_switch()
 	inst:weapon_switch()
@@ -341,13 +339,6 @@ local function fn()
 	inst:AddComponent("equippable")
 	inst.components.equippable:SetOnEquip(OnEquip)
 	inst.components.equippable:SetOnUnequip(OnUnequip)
-	inst.equippable_default = function(inst)
-		inst.components.equippable.walkspeedmult = 1.0
-	end
-	inst.equippable_switch = function(inst)
-		inst.components.equippable.walkspeedmult = 1.0
-	end
-	inst:equippable_default()
 
 	CanReloadfn(inst)
 	OnReloadfn(inst)
