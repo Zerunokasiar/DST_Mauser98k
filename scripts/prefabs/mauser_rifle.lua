@@ -1,4 +1,5 @@
 PARAMS = MAUSER_PARAMS
+FUNCS = MAUSER_FUNCS
 local assets =
 {
     Asset("ANIM","anim/player_actions_speargun.zip"),
@@ -29,7 +30,7 @@ end
 local function OnEquip(inst, owner)
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
-	inst:BoostOff(owner)
+	inst.components.boostable_mauser:BoostOff(owner)
 	if inst.components.finiteuses_mauser:GetUses("ammo") > 0 then
 		OnAnimSet(inst, owner)
 		inst:OnSwitch()
@@ -42,7 +43,7 @@ end
 local function OnUnequip(inst, owner)
 	owner.AnimState:Hide("ARM_carry")
 	owner.AnimState:Show("ARM_normal")
-	inst:BoostOff(owner)
+	inst.components.boostable_mauser:BoostOff(owner)
 	inst:OnDefault()
 end
 
@@ -53,7 +54,7 @@ local function CanReloadfn(inst)
 		local input1 = inst.components.finiteuses_mauser:GetUses("rifle")
 		local input2 = item.components.finiteuses:GetUses()
 		local max = inst.components.finiteuses_mauser:GetMaxUses("rifle")
-		local result = max < (input1 + input2)
+		local result = max < input1 + input2
 		if result then
 			inst.components.finiteuses_mauser:SetUses("rifle", max)
 			item.components.finiteuses:SetUses(input1 + input2 - max)
@@ -62,6 +63,7 @@ local function CanReloadfn(inst)
 		end
 		return not result
 	end
+
 	inst.canReloadfn['mauser_ammo'] = function(inst, item)
 		if inst.components.finiteuses_mauser:GetFull("ammo") then
 			return false
@@ -69,7 +71,7 @@ local function CanReloadfn(inst)
 		local input1 = inst.components.finiteuses_mauser:GetUses("ammo")
 		local input2 = item.components.stackable:StackSize()
 		local max = inst.components.finiteuses_mauser:GetMaxUses("ammo")
-		local result = max < (input1 + input2)
+		local result = max < input1 + input2
 		if result then
 			inst.components.finiteuses_mauser:SetUses("ammo", max)
 			item.components.stackable:SetStackSize(input1 + input2 - max + 1)
@@ -79,6 +81,7 @@ local function CanReloadfn(inst)
 		end
 		return true
 	end
+
 	inst.canReloadfn['mauser_bayonet'] = function(inst, item)
 		return true
 	end
@@ -96,9 +99,11 @@ local function OnReloadfn(inst)
 
 	inst.onReloadfn['mauser_gunstock'] = function(inst, giver, item)
 	end
+
 	inst.onReloadfn['mauser_ammo'] = function(inst, giver, item)
 		giver.SoundEmitter:PlaySound("rifle/reload/reload_1")
 	end
+
 	inst.onReloadfn['mauser_bayonet'] = function(inst, giver, item)
 		local prefab = SpawnPrefab("mauser_rifleb")
 		local ammo = inst.components.finiteuses_mauser:GetUses("ammo")
@@ -130,46 +135,22 @@ local function OnBreak(inst)
 		return
 	end
 	local owner = inst.components.inventoryitem.owner
+	owner = owner or inst
 
 	for i = 1, inst.components.finiteuses_mauser:GetUses("ammo") do
 		local ammo = SpawnPrefab("mauser_ammo")
-		owner = owner or inst
 		ammo.Transform:SetPosition(owner.Transform:GetWorldPosition())
 		ammo.components.inventoryitem:OnDropped(true, 1.0)
 	end
 	local gears = SpawnPrefab("gears")
-	owner = owner or inst
 	gears.Transform:SetPosition(owner.Transform:GetWorldPosition())
 	gears.components.inventoryitem:OnDropped(true, 1.0)
 	inst:Remove()
 end
 
-local function CloseTarget(doer, pos)
-	local x, y, z = pos:Get()
-	local range = PARAMS.AUTOAIM
-	if doer.components.playercontroller.isclientcontrollerattached then
-		range = PARAMS.RANGE * PARAMS.AUTORANGE
-	end
-	local ents = TheSim:FindEntities(x, y, z, range)
-	local minDist = nil;
-	local target = nil;
-	for k,v in pairs(ents) do
-		local flag = doer.components.combat
-		flag = flag and doer.components.combat:CanTarget(v)
-		if flag then
-			local tmpDist = (pos - v:GetPosition()).magnitude
-			if not minDist or tmpDist < minDist then
-				minDist = tmpDist
-				target = v
-			end
-		end
-	end
-	return target
-end
-
 local function CanFire(inst, doer, target, pos)
 	if not doer.components.combat:CanTarget(target) then
-		target = CloseTarget(doer, pos or target:GetPosition())
+		target = FUNCS.FindTarget(doer, pos or target:GetPosition())
 	end
 	local flag = target ~= nil
 	flag = flag and not target:IsInLimbo()
@@ -180,25 +161,13 @@ local function CanFire(inst, doer, target, pos)
 	return flag
 end
 
-local function GetMultiplier(inst)
-	local owner = inst.components.inventoryitem.owner
-	local combat = owner.components.combat
-	local multiplier = combat.damagemultiplier or 1
-	multiplier = multiplier * combat.externaldamagemultipliers:Get()
-	if multiplier > 1 then
-		multiplier = multiplier - 1
-		multiplier = multiplier / 2.0 + 1
-	end
-	return 1.0 / multiplier
-end
-
 local function OnFire(inst, doer, target, pos, homing)
 	if not doer.components.combat:CanTarget(target) then
-		target = CloseTarget(doer, pos or target:GetPosition())
+		target = FUNCS.FindTarget(doer, pos or target:GetPosition())
 	end
 	local proj = SpawnPrefab("mauser_bullet")
 	local damage = PARAMS.RIFLE_DMG_R * TUNING[PARAMS.RIFLE_R]
-	local multiplier = GetMultiplier(inst)
+	local multiplier = FUNCS.GetMultiplier(inst)
 	proj.components.weapon:SetDamage(damage * multiplier)
     proj:AddComponent("inventoryitem")
 	proj.Transform:SetPosition(doer.Transform:GetWorldPosition())
@@ -227,7 +196,6 @@ local function Firefn(inst, doer, target, pos)
 end
 
 local function OnHit(inst, doer, target, pos)
-	if not target then target = CloseTarget(doer, pos) end
 	inst.components.finiteuses_mauser:Uses("rifle")
 end
 
@@ -273,26 +241,25 @@ local function OnChange(inst, flag)
 	inst:Remove()
 end
 
-local function OnDebuffSet(inst, owner)
-	local value = PARAMS.RIFLE_DMG_M * TUNING[PARAMS.RIFLE_M]
-	local mult = PARAMS.MOVING_SPEED
-	local mult2 = mult * mult
-	inst.components.weapon:SetDamage(value / mult2)
-end
-
-local function OnDebuffReset(inst, owner)
-	local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
-	inst.components.weapon:SetDamage(value)
-end
-
 local function OnStartStarving(owner)
-	local inst = owner.components.combat:GetWeapon()
-	OnDebuffSet(inst)
+	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if inst:HasTag("mauser_boost") then
+		inst.components.boostable_mauser:DebuffOn(owner)
+	end
 end
 
 local function OnStopStarving(owner)
-	local inst = owner.components.combat:GetWeapon()
-	OnDebuffReset(inst)
+	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if inst:HasTag("mauser_boost") then
+		inst.components.boostable_mauser:DebuffOff(owner)
+	end
+end
+
+local function OnMounted(owner)
+	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if inst:HasTag("mauser_boost") then
+		inst.components.boostable_mauser:BoostOff(owner)
+	end
 end
 
 local function BoostOn(inst, owner)
@@ -303,10 +270,11 @@ local function BoostOn(inst, owner)
 	if owner.components.hunger ~= nil then
         owner.components.hunger.burnratemodifiers:SetModifier(inst, mult)
 		if owner.components.hunger:IsStarving() then
-			OnDebuffSet(inst)
+			inst.components.boostable_mauser:DebuffOn(owner)
 		end
 		owner:ListenForEvent("startstarving", OnStartStarving)
 		owner:ListenForEvent("stopstarving", OnStopStarving)
+		owner:ListenForEvent("mounted", OnMounted)
     end
 end
 
@@ -315,10 +283,23 @@ local function BoostOff(inst, owner)
 	inst.components.equippable.walkspeedmult = 1.0
     if owner.components.hunger ~= nil then
         owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
-		OnDebuffReset(inst)
+		inst.components.boostable_mauser:DebuffOff(owner)
 		owner:RemoveEventCallback("startstarving", OnStartStarving)
 		owner:RemoveEventCallback("stopstarving", OnStopStarving)
+		owner:RemoveEventCallback("mounted", OnMounted)
 	end
+end
+
+local function DebuffOn(inst, owner)
+	local value = PARAMS.RIFLE_DMG_M * TUNING[PARAMS.RIFLE_M]
+	local mult = PARAMS.MOVING_SPEED
+	local mult2 = mult * mult
+	inst.components.weapon:SetDamage(value / mult2)
+end
+
+local function DebuffOff(inst, owner)
+	local value = PARAMS.RIFLE_DMG_M * TUNING[PARAMS.RIFLE_M]
+	inst.components.weapon:SetDamage(value)
 end
 
 local function fn()
@@ -334,6 +315,7 @@ local function fn()
 		MakeInventoryFloatable(inst, "med", 0.05, {0.75, 0.4, 0.75})
 	end
 	
+	inst:AddTag("allow_action_on_impassable")
 	inst:AddTag("mauser_rifle")
 	inst:AddTag(PARAMS.MAUSER_CHARGE_MOTION)
 
@@ -346,8 +328,6 @@ local function fn()
 	inst.OnSwitch = OnSwitch
 	inst.CanFire = CanFire
 	inst.OnFire = OnFire
-	inst.BoostOn = BoostOn
-	inst.BoostOff = BoostOff
 
 	if TheSim:GetGameID() == "DST" then
 		inst.entity:AddNetwork()
@@ -362,10 +342,10 @@ local function fn()
 	inst.components.equippable:SetOnEquip(OnEquip)
 	inst.components.equippable:SetOnUnequip(OnUnequip)
 	inst.equippable_default = function(inst)
-			inst.components.equippable.walkspeedmult = 1.0
+		inst.components.equippable.walkspeedmult = 1.0
 	end
 	inst.equippable_switch = function(inst)
-			inst.components.equippable.walkspeedmult = 1.0
+		inst.components.equippable.walkspeedmult = 1.0
 	end
 	inst:equippable_default()
 
@@ -377,6 +357,10 @@ local function fn()
 	inst.components.trader.onaccept = OnReload
 
 	inst:AddComponent("boostable_mauser")
+	inst.components.boostable_mauser:SetBoostOn(BoostOn)
+	inst.components.boostable_mauser:SetBoostOff(BoostOff)
+	inst.components.boostable_mauser:SetDebuffOn(DebuffOn)
+	inst.components.boostable_mauser:SetDebuffOff(DebuffOff)
 
 	inst:AddComponent("finiteuses_mauser")
 	inst.components.finiteuses_mauser:SetMaxUses("ammo", PARAMS.AMMO)

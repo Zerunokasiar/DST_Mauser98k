@@ -9,15 +9,15 @@ local assets =
 
 local function onEquip(inst, owner) 
 	owner.AnimState:OverrideSymbol("swap_object", "swap_mauser_bayonet", "swap_bayonet")
-	owner.AnimState:Show("ARM_carry") 
+	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
-	inst:BoostOff(owner)
+	inst.components.boostable_mauser:BoostOff(owner)
 end
 
-local function onUnequip(inst, owner) 
-	owner.AnimState:Hide("ARM_carry") 
-	owner.AnimState:Show("ARM_normal") 
-	inst:BoostOff(owner)
+local function onUnequip(inst, owner)
+	owner.AnimState:Hide("ARM_carry")
+	owner.AnimState:Show("ARM_normal")
+	inst.components.boostable_mauser:BoostOff(owner)
 end
 
 local function canReload(inst, item)
@@ -44,26 +44,25 @@ local function onBreak(inst)
 	inst:Remove()
 end
 
-local function OnDebuffSet(inst, owner)
-	local value = PARAMS.BAYONET_DMG_1 * TUNING[PARAMS.BAYONET_1]
-	local mult = PARAMS.MOVING_SPEED
-	local mult2 = mult * mult
-	inst.components.weapon:SetDamage(value / mult2)
-end
-
-local function OnDebuffReset(inst, owner)
-	local value = PARAMS.BAYONET_DMG_1 * TUNING[PARAMS.BAYONET_1]
-	inst.components.weapon:SetDamage(value)
-end
-
 local function OnStartStarving(owner)
-	local inst = owner.components.combat:GetWeapon()
-	OnDebuffSet(inst)
+	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if inst:HasTag("mauser_boost") then
+		inst.components.boostable_mauser:DebuffOn(owner)
+	end
 end
 
 local function OnStopStarving(owner)
-	local inst = owner.components.combat:GetWeapon()
-	OnDebuffReset(inst)
+	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if inst:HasTag("mauser_boost") then
+		inst.components.boostable_mauser:DebuffOff(owner)
+	end
+end
+
+local function OnMounted(owner)
+	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if inst:HasTag("mauser_boost") then
+		inst.components.boostable_mauser:BoostOff(owner)
+	end
 end
 
 local function BoostOn(inst, owner)
@@ -74,10 +73,11 @@ local function BoostOn(inst, owner)
 	if owner.components.hunger ~= nil then
         owner.components.hunger.burnratemodifiers:SetModifier(inst, mult)
 		if owner.components.hunger:IsStarving() then
-			OnDebuffSet(inst)
+			inst.components.boostable_mauser:DebuffOn(owner)
 		end
 		owner:ListenForEvent("startstarving", OnStartStarving)
 		owner:ListenForEvent("stopstarving", OnStopStarving)
+		owner:ListenForEvent("mounted", OnMounted)
     end
 end
 
@@ -86,10 +86,23 @@ local function BoostOff(inst, owner)
 	inst.components.equippable.walkspeedmult = 1.0
     if owner.components.hunger ~= nil then
         owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
-		OnDebuffReset(inst)
+		inst.components.boostable_mauser:DebuffOff(owner)
 		owner:RemoveEventCallback("startstarving", OnStartStarving)
 		owner:RemoveEventCallback("stopstarving", OnStopStarving)
+		owner:RemoveEventCallback("mounted", OnMounted)
 	end
+end
+
+local function DebuffOn(inst, owner)
+	local value = PARAMS.BAYONET_DMG_1 * TUNING[PARAMS.BAYONET_1]
+	local mult = PARAMS.MOVING_SPEED
+	local mult2 = mult * mult
+	inst.components.weapon:SetDamage(value / mult2)
+end
+
+local function DebuffOff(inst, owner)
+	local value = PARAMS.BAYONET_DMG_1 * TUNING[PARAMS.BAYONET_1]
+	inst.components.weapon:SetDamage(value)
 end
 
 local function fn()
@@ -107,8 +120,6 @@ local function fn()
 	
 	inst:AddTag("sharp")
 	inst:AddTag(PARAMS.MAUSER_CHARGE_MOTION)
-	inst.BoostOn = BoostOn
-	inst.BoostOff = BoostOff
 	
 	if TheSim:GetGameID() == "DST" then
 		inst.entity:AddNetwork()
@@ -123,6 +134,10 @@ local function fn()
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/mauser_bayonet.xml"
 	
 	inst:AddComponent("boostable_mauser")
+	inst.components.boostable_mauser:SetBoostOn(BoostOn)
+	inst.components.boostable_mauser:SetBoostOff(BoostOff)
+	inst.components.boostable_mauser:SetDebuffOn(DebuffOn)
+	inst.components.boostable_mauser:SetDebuffOff(DebuffOff)
 
 	inst:AddComponent("equippable")
 	inst.components.equippable:SetOnEquip(onEquip)

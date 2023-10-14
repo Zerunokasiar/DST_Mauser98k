@@ -4,343 +4,433 @@ TimeEvent = GLOBAL.TimeEvent
 EventHandler = GLOBAL.EventHandler
 ActionHandler = GLOBAL.ActionHandler
 TheSim = TheSim or GLOBAL.TheSim
+FUNCS = GLOBAL.MAUSER_FUNCS
 
-local function CloseTarget(doer, pos)
-	local x, y, z = pos:Get()
-	local range = PARAMS.AUTOAIM
-	if doer.components.playercontroller.isclientcontrollerattached then
-		range = PARAMS.RANGE * PARAMS.AUTORANGE
-	end
-	local ents = TheSim:FindEntities(x, y, z, range)
-	local minDist = nil;
-	local target = nil;
-	for k,v in pairs(ents) do
-		local flag = doer.components.combat or doer.replica.combat
-		flag = flag and flag:CanTarget(v)
-		if flag then
-			local tmpDist = (pos - v:GetPosition()).magnitude
-			if not minDist or tmpDist < minDist then
-				minDist = tmpDist
-				target = v
-			end
-		end
-	end
-	return target
+local function DoMountSound(inst, mount, sound, ispredicted)
+    if mount ~= nil and mount.sounds ~= nil then
+        inst.SoundEmitter:PlaySound(mount.sounds[sound], nil, nil, ispredicted)
+    end
 end
-
-local RIFLE_ACTION = State({
-    name = "rifle_action",
-    tags = { "attack", "notalking", "abouttoattack", "autopredict" },
-
-	onenter = function(inst)
-		local buffaction = inst:GetBufferedAction()
-		local target = buffaction ~= nil and buffaction.target or nil
-		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		inst.AnimState:OverrideSymbol("swap_object", equip.AnimSet, equip.AnimBase)
-		if not inst.components.combat:CanTarget(target) then
-			if buffaction.pos then
-				target = CloseTarget(inst, buffaction:GetActionPoint())
-			elseif target ~= nil then
-				target = CloseTarget(inst, target:GetPosition())
-			end
-		end 
+local RIFLE_ACTION = {}
+RIFLE_ACTION.NAME = "rifle_action"
+RIFLE_ACTION.TAGS = { "attack", "notalking", "abouttoattack", "autopredict" }
+RIFLE_ACTION.TAGS_C = { "attack", "notalking", "abouttoattack" }
+RIFLE_ACTION.ONENTER = function(inst)
+	local buffaction = inst:GetBufferedAction()
+	local target = buffaction and buffaction.target or nil
+	local inventory = inst.components.inventory or inst.replica.inventory
+	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	local combat = inst.components.combat or inst.replica.combat
+	if combat:InCooldown() then
+		inst.sg:RemoveStateTag("abouttoattack")
+		inst:ClearBufferedAction()
+		inst.sg:GoToState("idle", true)
+		return
+	end
+	if not combat:CanTarget(target) then
+		if buffaction.pos then
+			target = FUNCS.FindTarget(inst, buffaction:GetActionPoint())
+		elseif target then
+			target = FUNCS.FindTarget(inst, target:GetPosition())
+		end
+	end
+	inst.AnimState:OverrideSymbol("swap_object", equip.AnimSet, equip.AnimBase)
+	if inst.components.combat then
 		inst.components.combat:SetTarget(target)
-		inst.components.combat:StartAttack()
-		inst.components.locomotor:Stop()
-		inst.AnimState:PlayAnimation("speargun")
-		if equip:HasTag("mauser_switch") or inst.sg.laststate == inst.sg.currentstate then
-		-- if inst.sg.laststate == inst.sg.currentstate then
-			inst.sg.statemem.chained = true
-			inst.AnimState:SetTime(6 * FRAMES)
-		end
-		
-		local cooldown = inst.components.combat.min_attack_period
-		cooldown = cooldown + (inst.sg.statemem.chained and 6 or 12) * FRAMES
-		inst.sg:SetTimeout(cooldown)
-
-		if target ~= nil and target:IsValid() then
-			inst:FacePoint(target.Transform:GetWorldPosition())
-			inst.sg.statemem.attacktarget = target
-		end
-	end,
-
-	timeline =
-	{
-		TimeEvent(6 * FRAMES, function(inst)
-			if inst.sg.statemem.chained then
-				inst:PerformBufferedAction()
-				inst.sg:RemoveStateTag("abouttoattack")
-			end
-		end),
-		TimeEvent(12 * FRAMES, function(inst)
-			if not inst.sg.statemem.chained then
-				inst:PerformBufferedAction()
-				inst.sg:RemoveStateTag("abouttoattack")
-			end
-		end),
-	},
-
-	ontimeout = function(inst)
-		inst.sg:RemoveStateTag("attack")
-		inst.sg:AddStateTag("idle")
-	end,
-
-	events =
-	{
-		EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
-		EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-		EventHandler("animqueueover", function(inst)
-			if inst.AnimState:AnimDone() then
-				inst.sg:GoToState("idle")
-			end
-		end),
-	},
-
-	onexit = function(inst)
-		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
-			inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
-		end
-		inst.components.combat:SetTarget(nil)
-		if inst.sg:HasStateTag("abouttoattack") then
-			inst.components.combat:CancelAttack()
-		end
-	end,
-})
-
-local RIFLE_ACTION_CLIENT = State({
-	name = "rifle_action",
-	tags = { "attack", "notalking", "abouttoattack"},
-
-	onenter = function(inst)
-		local buffaction = inst:GetBufferedAction()
-		local target = buffaction ~= nil and buffaction.target or nil
-		local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		inst.AnimState:OverrideSymbol("swap_object", equip.AnimSet, equip.AnimBase)
-		if not inst.replica.combat:CanTarget(target) then
-			if buffaction.pos then
-				target = CloseTarget(inst, buffaction:GetActionPoint())
-			else
-				target = CloseTarget(inst, target:GetPosition())
-			end
-		end 
-		inst.replica.combat:StartAttack()
-		inst.components.locomotor:Stop()
-		inst.AnimState:PlayAnimation("speargun")
-		if equip:HasTag("mauser_switch") or inst.sg.laststate == inst.sg.currentstate then
-		-- if inst.sg.laststate == inst.sg.currentstate then
-			inst.sg.statemem.chained = true
-			inst.AnimState:SetTime(6 * FRAMES)
-		end
-		
-		local cooldown = inst.replica.combat:MinAttackPeriod()
-		cooldown = cooldown + (inst.sg.statemem.chained and 6 or 12) * FRAMES
-		inst.sg:SetTimeout(cooldown)
-
+	end
+	combat:StartAttack()
+	inst.components.locomotor:Stop()
+	inst.AnimState:PlayAnimation("speargun")
+	inst.AnimState:SetTime(6 * FRAMES)
+	inst.sg:SetTimeout(6 * FRAMES)
+	if not inst.components.combat then
 		inst:PerformPreviewBufferedAction()
-		if target ~= nil and target:IsValid() then
-			inst:FacePoint(target.Transform:GetWorldPosition())
+	end
+	if target ~= nil and target:IsValid() then
+		inst:FacePoint(target.Transform:GetWorldPosition())
+		inst.sg.statemem.attacktarget = target
+	end
+end
+RIFLE_ACTION.ONTIMEOUT = function(inst)
+	inst.sg:RemoveStateTag("attack")
+	inst.sg:AddStateTag("idle")
+end
+RIFLE_ACTION.ONEXIT = function(inst)
+	local inventory = inst.components.inventory or inst.replica.inventory
+	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
+		inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
+	end
+	if inst.components.combat then
+		inst.components.combat:SetTarget(nil)
+	end
+	if inst.sg:HasStateTag("abouttoattack") then
+		local combat = inst.components.combat or inst.replica.combat
+		combat:CancelAttack()
+	end
+end
+RIFLE_ACTION.TIMELINE = {
+	TimeEvent(5 * FRAMES, function(inst)
+		inst:PerformBufferedAction()
+		inst.sg:RemoveStateTag("abouttoattack")
+	end),
+}
+RIFLE_ACTION.TIMELINE_C = {
+	TimeEvent(5 * FRAMES, function(inst)
+		inst:ClearBufferedAction()
+		inst.sg:RemoveStateTag("abouttoattack")
+	end),
+}
+RIFLE_ACTION.EVENTS = {
+	EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+	EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+	EventHandler("animqueueover", function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState("idle")
+		end
+	end),
+}
+RIFLE_ACTION.EVENTS_C = {
+	EventHandler("animqueueover", function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState("idle")
+		end
+	end),
+}
+RIFLE_ACTION.STATE = State({
+    name = RIFLE_ACTION.NAME,
+    tags = RIFLE_ACTION.TAGS,
+	onenter = RIFLE_ACTION.ONENTER,
+	ontimeout = RIFLE_ACTION.ONTIMEOUT,
+	onexit = RIFLE_ACTION.ONEXIT,
+	timeline = RIFLE_ACTION.TIMELINE,
+	events = RIFLE_ACTION.EVENTS,
+})
+RIFLE_ACTION.STATE_CLIENT = State({
+	name = RIFLE_ACTION.NAME,
+	tags = RIFLE_ACTION.TAGS_C,
+	onenter = RIFLE_ACTION.ONENTER,
+	ontimeout = RIFLE_ACTION.ONTIMEOUT,
+	onexit = RIFLE_ACTION.ONEXIT,
+	timeline = RIFLE_ACTION.TIMELINE_C,
+	events = RIFLE_ACTION.EVENTS_C,
+})
+AddStategraphState("wilson", RIFLE_ACTION.STATE)
+AddStategraphState("wilson_client", RIFLE_ACTION.STATE_CLIENT)
+
+local RIFLE_INSTANT_ACTION = {}
+RIFLE_INSTANT_ACTION.NAME = "rifle_instant_action"
+RIFLE_INSTANT_ACTION.TAGS = { "attack", "notalking", "abouttoattack", "autopredict" }
+RIFLE_INSTANT_ACTION.TAGS_C = { "attack", "notalking", "abouttoattack" }
+RIFLE_INSTANT_ACTION.ONENTER = function(inst)
+	local buffaction = inst:GetBufferedAction()
+	local target = buffaction and buffaction.target or nil
+	local inventory = inst.components.inventory or inst.replica.inventory
+	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	local combat = inst.components.combat or inst.replica.combat
+	if combat:InCooldown() then
+		inst.sg:RemoveStateTag("abouttoattack")
+		inst:ClearBufferedAction()
+		inst.sg:GoToState("idle", true)
+		return
+	end
+	if not combat:CanTarget(target) then
+		if buffaction.pos then
+			target = FUNCS.FindTarget(inst, buffaction:GetActionPoint())
+		elseif target then
+			target = FUNCS.FindTarget(inst, target:GetPosition())
+		end
+	end
+	inst.AnimState:OverrideSymbol("swap_object", equip.AnimSet, equip.AnimBase)
+	if inst.components.combat then
+		inst.components.combat:SetTarget(target)
+	end
+	combat:StartAttack()
+	inst.components.locomotor:Stop()
+	inst.AnimState:PlayAnimation("speargun")
+	inst.sg:SetTimeout(12 * FRAMES)
+	if not inst.components.combat then
+		inst:PerformPreviewBufferedAction()
+	end
+	if target ~= nil and target:IsValid() then
+		inst:FacePoint(target.Transform:GetWorldPosition())
+		inst.sg.statemem.attacktarget = target
+	end
+end
+RIFLE_INSTANT_ACTION.ONTIMEOUT = function(inst)
+	inst.sg:RemoveStateTag("attack")
+	inst.sg:AddStateTag("idle")
+end
+RIFLE_INSTANT_ACTION.ONEXIT = function(inst)
+	local inventory = inst.components.inventory or inst.replica.inventory
+	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
+		inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
+	end
+	if inst.components.combat then
+		inst.components.combat:SetTarget(nil)
+	end
+	if inst.sg:HasStateTag("abouttoattack") then
+		local combat = inst.components.combat or inst.replica.combat
+		combat:CancelAttack()
+	end
+end
+RIFLE_INSTANT_ACTION.TIMELINE = {
+	TimeEvent(11 * FRAMES, function(inst)
+		inst:PerformBufferedAction()
+		inst.sg:RemoveStateTag("abouttoattack")
+	end),
+}
+RIFLE_INSTANT_ACTION.TIMELINE_C = {
+	TimeEvent(11 * FRAMES, function(inst)
+		inst:ClearBufferedAction()
+		inst.sg:RemoveStateTag("abouttoattack")
+	end),
+}
+RIFLE_INSTANT_ACTION.EVENTS = {
+	EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+	EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+	EventHandler("animqueueover", function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState("idle")
+		end
+	end),
+}
+RIFLE_INSTANT_ACTION.EVENTS_C = {
+	EventHandler("animqueueover", function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState("idle")
+		end
+	end),
+}
+RIFLE_INSTANT_ACTION.STATE = State({
+    name = RIFLE_INSTANT_ACTION.NAME,
+    tags = RIFLE_INSTANT_ACTION.TAGS,
+	onenter = RIFLE_INSTANT_ACTION.ONENTER,
+	ontimeout = RIFLE_INSTANT_ACTION.ONTIMEOUT,
+	onexit = RIFLE_INSTANT_ACTION.ONEXIT,
+	timeline = RIFLE_INSTANT_ACTION.TIMELINE,
+	events = RIFLE_INSTANT_ACTION.EVENTS,
+})
+RIFLE_INSTANT_ACTION.STATE_CLIENT = State({
+	name = RIFLE_INSTANT_ACTION.NAME,
+	tags = RIFLE_INSTANT_ACTION.TAGS_C,
+	onenter = RIFLE_INSTANT_ACTION.ONENTER,
+	ontimeout = RIFLE_INSTANT_ACTION.ONTIMEOUT,
+	onexit = RIFLE_INSTANT_ACTION.ONEXIT,
+	timeline = RIFLE_INSTANT_ACTION.TIMELINE_C,
+	events = RIFLE_INSTANT_ACTION.EVENTS_C,
+})
+AddStategraphState("wilson", RIFLE_INSTANT_ACTION.STATE)
+AddStategraphState("wilson_client", RIFLE_INSTANT_ACTION.STATE_CLIENT)
+
+local RIFLE_CAV_ACTION = {}
+RIFLE_CAV_ACTION.NAME = "rifle_cav_action"
+RIFLE_CAV_ACTION.TAGS = { "attack", "notalking", "abouttoattack", "autopredict" }
+RIFLE_CAV_ACTION.TAGS_C = { "attack", "notalking", "abouttoattack" }
+RIFLE_CAV_ACTION.ONENTER = function(inst)
+	local buffaction = inst:GetBufferedAction()
+	local target = buffaction and buffaction.target or nil
+	local inventory = inst.components.inventory or inst.replica.inventory
+	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	local combat = inst.components.combat or inst.replica.combat
+	if combat:InCooldown() then
+		inst.sg:RemoveStateTag("abouttoattack")
+		inst:ClearBufferedAction()
+		inst.sg:GoToState("idle", true)
+		return
+	end
+	if not combat:CanTarget(target) then
+		if buffaction.pos then
+			target = FUNCS.FindTarget(inst, buffaction:GetActionPoint())
+		elseif target then
+			target = FUNCS.FindTarget(inst, target:GetPosition())
+		end
+	end
+	inst.AnimState:OverrideSymbol("swap_object", equip.AnimSet, equip.AnimBase)
+	if inst.components.combat then
+		inst.components.combat:SetTarget(target)
+	end
+	combat:StartAttack()
+	inst.components.locomotor:Stop()
+
+	inst.AnimState:PlayAnimation("dart_pre")
+	inst.AnimState:PushAnimation("hit", false)
+	
+	inst.sg:SetTimeout(18 * FRAMES)
+	-- if not inst.components.combat then
+		inst:PerformPreviewBufferedAction()
+	-- end
+	if target ~= nil and target:IsValid() then
+		inst:FacePoint(target.Transform:GetWorldPosition())
+		inst.sg.statemem.attacktarget = target
+	end
+end
+RIFLE_CAV_ACTION.ONTIMEOUT = function(inst)
+	inst.sg:RemoveStateTag("attack")
+	inst.sg:AddStateTag("idle")
+end
+RIFLE_CAV_ACTION.ONEXIT = function(inst)
+	local inventory = inst.components.inventory or inst.replica.inventory
+	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
+		inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
+	end
+	if inst.components.combat then
+		inst.components.combat:SetTarget(nil)
+	end
+	if inst.sg:HasStateTag("abouttoattack") then
+		local combat = inst.components.combat or inst.replica.combat
+		combat:CancelAttack()
+	end
+end
+RIFLE_CAV_ACTION.TIMELINE = {
+	TimeEvent(11 * FRAMES, function(inst)
+		inst:PerformBufferedAction()
+		inst.sg:RemoveStateTag("abouttoattack")
+	end),
+}
+RIFLE_CAV_ACTION.TIMELINE_C = {
+	TimeEvent(11 * FRAMES, function(inst)
+		inst:ClearBufferedAction()
+		inst.sg:RemoveStateTag("abouttoattack")
+	end),
+}
+RIFLE_CAV_ACTION.EVENTS = {
+	EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+	EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+	EventHandler("animqueueover", function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState("idle")
+		end
+	end),
+}
+RIFLE_CAV_ACTION.EVENTS_C = {
+	EventHandler("animqueueover", function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState("idle")
+		end
+	end),
+}
+RIFLE_CAV_ACTION.STATE = State({
+    name = RIFLE_CAV_ACTION.NAME,
+    tags = RIFLE_CAV_ACTION.TAGS,
+	onenter = RIFLE_CAV_ACTION.ONENTER,
+	ontimeout = RIFLE_CAV_ACTION.ONTIMEOUT,
+	onexit = RIFLE_CAV_ACTION.ONEXIT,
+	timeline = RIFLE_CAV_ACTION.TIMELINE,
+	events = RIFLE_CAV_ACTION.EVENTS,
+})
+RIFLE_CAV_ACTION.STATE_CLIENT = State({
+	name = RIFLE_CAV_ACTION.NAME,
+	tags = RIFLE_CAV_ACTION.TAGS_C,
+	onenter = RIFLE_CAV_ACTION.ONENTER,
+	ontimeout = RIFLE_CAV_ACTION.ONTIMEOUT,
+	onexit = RIFLE_CAV_ACTION.ONEXIT,
+	timeline = RIFLE_CAV_ACTION.TIMELINE_C,
+	events = RIFLE_CAV_ACTION.EVENTS_C,
+})
+AddStategraphState("wilson", RIFLE_CAV_ACTION.STATE)
+AddStategraphState("wilson_client", RIFLE_CAV_ACTION.STATE_CLIENT)
+
+local BAYONET_ACTION = {}
+BAYONET_ACTION.NAME = "bayonet_action"
+BAYONET_ACTION.TAGS = { "attack", "notalking", "abouttoattack", "autopredict" }
+BAYONET_ACTION.TAGS_C = { "attack", "notalking", "abouttoattack" }
+BAYONET_ACTION.ONENTER = function(inst)
+	local buffaction = inst:GetBufferedAction()
+	local target = buffaction ~= nil and buffaction.target or nil
+	local inventory = inst.components.inventory or inst.replica.inventory
+	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	local combat = inst.components.combat or inst.replica.combat
+	if inst.components.combat then
+		inst.components.combat:SetTarget(target)
+	end
+	combat:StartAttack()
+	inst.components.locomotor:Stop()
+	local cooldown = nil
+	if combat.min_attack_period then
+		cooldown = inst.components.combat.min_attack_period + .5 * FRAMES
+	else
+		cooldown = inst.replica.combat:MinAttackPeriod() + .5 * FRAMES
+	end
+	inst.AnimState:PlayAnimation("spearjab")
+	cooldown = math.max(cooldown, 24 * FRAMES)
+	inst.sg:SetTimeout(cooldown)
+	if not inst.components.combat and buffaction then
+		inst:PerformPreviewBufferedAction()
+	end
+	if target ~= nil then
+		if inst.components.combat then
+			inst.components.combat:BattleCry()
+		end
+		if target:IsValid() then
+			inst:FacePoint(target:GetPosition())
 			inst.sg.statemem.attacktarget = target
 		end
-	end,
-
-	timeline =
-	{
-		TimeEvent(6 * FRAMES, function(inst)
-			if inst.sg.statemem.chained then
-				inst:ClearBufferedAction()
-				inst.sg:RemoveStateTag("abouttoattack")
-			end
-		end),
-		TimeEvent(12 * FRAMES, function(inst)
-			if not inst.sg.statemem.chained then
-				inst:ClearBufferedAction()
-				inst.sg:RemoveStateTag("abouttoattack")
-			end
-		end),
-	},
-
-	ontimeout = function(inst)
-		inst.sg:RemoveStateTag("attack")
-		inst.sg:AddStateTag("idle")
-	end,
-
-	events =
-	{
-		EventHandler("animqueueover", function(inst)
-			if inst.AnimState:AnimDone() then
-				inst.sg:GoToState("idle")
-			end
-		end),
-	},
-
-	onexit = function(inst)
-		local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
-			inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
-		end
-		if inst.sg:HasStateTag("abouttoattack") then
-			inst.replica.combat:CancelAttack()
-		end
-	end,
-})
-
-local BAYONET_ACTION = State({
-    name = "bayonet_action",
-    tags = { "attack", "notalking", "abouttoattack", "autopredict" },
-
-	onenter = function(inst)
-		local buffaction = inst:GetBufferedAction()
-		local target = buffaction ~= nil and buffaction.target or nil
-		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		inst.components.combat:SetTarget(target)
-		inst.components.combat:StartAttack()
-		inst.components.locomotor:Stop()
-		local cooldown = inst.components.combat.min_attack_period + .5 * FRAMES
-		if inst.components.rider:IsRiding() then
-			inst.AnimState:PlayAnimation("atk_pre")
-			inst.AnimState:PushAnimation("atk", false)
-			DoMountSound(inst, inst.components.rider:GetMount(), "angry", true)
-			cooldown = math.max(cooldown, 16 * FRAMES)
-		else
-			inst.AnimState:PlayAnimation("spearjab")
-			cooldown = math.max(cooldown, 24 * FRAMES)
-		end
-
-		inst.sg:SetTimeout(cooldown)
-
-		if target ~= nil then
-			inst.components.combat:BattleCry()
-			if target:IsValid() then
-				inst:FacePoint(target:GetPosition())
-				inst.sg.statemem.attacktarget = target
-			end
-		end
-	end,
-
-	timeline =
-	{
-		TimeEvent(4 * FRAMES, function(inst)
-			if not inst.components.rider:IsRiding() then
-				inst:PerformBufferedAction()
-				inst.sg:RemoveStateTag("abouttoattack")
-			end
-		end),
-		TimeEvent(8 * FRAMES, function(inst)
-			if inst.components.rider:IsRiding() then
-				inst:PerformBufferedAction()
-				inst.sg:RemoveStateTag("abouttoattack")
-			end
-		end),
-	},
-
-	ontimeout = function(inst)
-		inst.sg:RemoveStateTag("attack")
-		inst.sg:AddStateTag("idle")
-	end,
-
-	events =
-	{
-		EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
-		EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-		EventHandler("animqueueover", function(inst)
-			if inst.AnimState:AnimDone() then
-				inst.sg:GoToState("idle")
-			end
-		end),
-	},
-
-	onexit = function(inst)
+	end
+end
+BAYONET_ACTION.ONTIMEOUT = function(inst)
+	inst.sg:RemoveStateTag("attack")
+	inst.sg:AddStateTag("idle")
+end
+BAYONET_ACTION.ONEXIT = function(inst)
+	if inst.components.combat then
 		inst.components.combat:SetTarget(nil)
-		if inst.sg:HasStateTag("abouttoattack") then
-			inst.components.combat:CancelAttack()
+	end
+	if inst.sg:HasStateTag("abouttoattack") then
+		local combat = inst.components.combat or inst.replica.combat
+		combat:CancelAttack()
+	end
+end
+BAYONET_ACTION.TIMELINE = {
+	TimeEvent(4 * FRAMES, function(inst)
+		inst:PerformBufferedAction()
+		inst.sg:RemoveStateTag("abouttoattack")
+	end),
+}
+BAYONET_ACTION.TIMELINE_C = {
+	TimeEvent(4 * FRAMES, function(inst)
+		inst:ClearBufferedAction()
+		inst.sg:RemoveStateTag("abouttoattack")
+	end),
+}
+BAYONET_ACTION.EVENTS = {
+	EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+	EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+	EventHandler("animqueueover", function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState("idle")
 		end
-	end,
+	end),
+}
+BAYONET_ACTION.EVENTS_C = {
+	EventHandler("animqueueover", function(inst)
+		if inst.AnimState:AnimDone() then
+			inst.sg:GoToState("idle")
+		end
+	end),
+}
+BAYONET_ACTION.STATE = State({
+    name = BAYONET_ACTION.NAME,
+    tags = BAYONET_ACTION.TAGS,
+	onenter = BAYONET_ACTION.ONENTER,
+	ontimeout = BAYONET_ACTION.ONTIMEOUT,
+	onexit = BAYONET_ACTION.ONEXIT,
+	timeline = BAYONET_ACTION.TIMELINE,
+	events = BAYONET_ACTION.EVENTS,
 })
-
-local BAYONET_ACTION_CLIENT = State({
-	name = "bayonet_action",
-	tags = { "attack", "notalking", "abouttoattack"},
-
-	onenter = function(inst)
-		local cooldown = 0
-		if inst.replica.combat ~= nil then
-			inst.replica.combat:StartAttack()
-			cooldown = inst.replica.combat:MinAttackPeriod() + .5 * FRAMES
-		end
-		inst.components.locomotor:Stop()
-		local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-		local rider = inst.replica.rider
-		if rider ~= nil and rider:IsRiding() then
-			inst.AnimState:PlayAnimation("atk_pre")
-			inst.AnimState:PushAnimation("atk", false)
-			DoMountSound(inst, rider:GetMount(), "angry")
-			if cooldown > 0 then
-				cooldown = math.max(cooldown, 16 * FRAMES)
-			end
-		else
-			inst.AnimState:PlayAnimation("spearjab")
-			if cooldown > 0 then
-				cooldown = math.max(cooldown, 24 * FRAMES)
-			end
-		end
-
-		local buffaction = inst:GetBufferedAction()
-		if buffaction ~= nil then
-			inst:PerformPreviewBufferedAction()
-
-			if buffaction.target ~= nil and buffaction.target:IsValid() then
-				inst:FacePoint(buffaction.target:GetPosition())
-				inst.sg.statemem.attacktarget = buffaction.target
-			end
-		end
-
-		if cooldown > 0 then
-			inst.sg:SetTimeout(cooldown)
-		end
-	end,
-
-	timeline =
-	{
-		TimeEvent(4 * FRAMES, function(inst)
-			if not inst.replica.rider:IsRiding() then
-				inst:ClearBufferedAction()
-				inst.sg:RemoveStateTag("abouttoattack")
-			end
-		end),
-		TimeEvent(8 * FRAMES, function(inst)
-			if inst.replica.rider:IsRiding() then
-				inst:ClearBufferedAction()
-				inst.sg:RemoveStateTag("abouttoattack")
-			end
-		end),
-	},
-
-	ontimeout = function(inst)
-		inst.sg:RemoveStateTag("attack")
-		inst.sg:AddStateTag("idle")
-	end,
-
-	events =
-	{
-		EventHandler("animqueueover", function(inst)
-			if inst.AnimState:AnimDone() then
-				inst.sg:GoToState("idle")
-			end
-		end),
-	},
-
-	onexit = function(inst)
-		if inst.sg:HasStateTag("abouttoattack") and inst.replica.combat ~= nil then
-			inst.replica.combat:CancelAttack()
-		end
-	end,
+BAYONET_ACTION.STATE_CLIENT = State({
+	name = BAYONET_ACTION.NAME,
+	tags = BAYONET_ACTION.TAGS_C,
+	onenter = BAYONET_ACTION.ONENTER,
+	ontimeout = BAYONET_ACTION.ONTIMEOUT,
+	onexit = BAYONET_ACTION.ONEXIT,
+	timeline = BAYONET_ACTION.TIMELINE_C,
+	events = BAYONET_ACTION.EVENTS_C,
 })
-
-AddStategraphState("wilson", RIFLE_ACTION)
-AddStategraphState("wilson_client", RIFLE_ACTION_CLIENT)
-AddStategraphState("wilson", BAYONET_ACTION)
-AddStategraphState("wilson_client", BAYONET_ACTION_CLIENT)
+AddStategraphState("wilson", BAYONET_ACTION.STATE)
+AddStategraphState("wilson_client", BAYONET_ACTION.STATE_CLIENT)
 
 local function ChargeAction(inst, action)
 	if action.invobject ~= nil then
@@ -370,8 +460,12 @@ local function RangedAction(inst, action)
 	then
 		local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
 		local flag = equip:HasTag("mauser_rifle")
+		local ride = inst.components.rider:IsRiding()
 		-- flag = flag and not equip:HasTag("mauser_switch")
-		return flag and "rifle_action" or nil
+		if flag then
+			return ride and "rifle_cav_action" or "rifle_instant_action"
+		end
+		return nil
 	end
 end
 
@@ -382,8 +476,12 @@ local function RangedActionClient(inst, action)
 	then
 		local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) or nil
 		local flag = equip:HasTag("mauser_rifle")
+		local ride = inst.replica.rider:IsRiding()
 		-- flag = flag and not equip:HasTag("mauser_switch")
-		return flag and "rifle_action" or nil
+		if flag then
+			return ride and "rifle_cav_action" or "rifle_instant_action"
+		end
+		return nil
 	end
 end
 
@@ -400,7 +498,8 @@ local function postinit(self)
 				local motion = oldaction(inst, action)
 				if motion == "attack" then
 					local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-					if equip and equip:HasTag("mauser_rifle") then
+					local rider = inst.components.rider:IsRiding()
+					if equip and equip:HasTag("mauser_rifle") and not rider then
 						if equip:HasTag("mauser_switch") then return "rifle_action" end
 						return equip:HasTag("bayonet_action") and equip:HasTag("mauser_boost") and "bayonet_action" or "attack"
 					end
@@ -418,7 +517,8 @@ local function postinitclient(self)
 				local motion = oldaction(inst, action)
 				if motion == "attack" then
 					local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-					if equip and equip:HasTag("mauser_rifle") then
+					local rider = inst.replica.rider:IsRiding()
+					if equip and equip:HasTag("mauser_rifle") and not rider then
 						if equip:HasTag("mauser_switch") then return "rifle_action" end
 						return equip:HasTag("bayonet_action") and equip:HasTag("mauser_boost") and "bayonet_action" or "attack"
 					end
