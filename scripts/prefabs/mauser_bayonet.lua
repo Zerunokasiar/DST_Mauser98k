@@ -26,7 +26,7 @@ local function canReload(inst, item)
 	end
 	local input1 = inst.components.finiteuses:GetUses()
 	local input2 = item.components.finiteuses:GetUses()
-	local max = inst.components.finiteuses:GetMaxUses()
+	local max = inst.components.finiteuses.total
 	local result = max < (input1 + input2)
 	if result then
 		inst.components.finiteuses:SetUses(max)
