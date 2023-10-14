@@ -27,9 +27,26 @@ local function OnAnimReset(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_object", inst.AnimReset, "swap_rifleb")
 end
 
+local function OnMounted(owner)
+	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if inst:HasTag("mauser_boost") then
+		inst.components.boostable_mauser:BoostOff(owner)
+	end
+	inst:OnAnimSet(owner)
+	inst:OnSwitch()
+end
+
+local function OnDismounted(owner)
+	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	inst:OnAnimReset(owner)
+	inst:OnDefault()
+end
+
 local function OnEquip(inst, owner)
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
+	owner:ListenForEvent("mounted", OnMounted)
+	owner:ListenForEvent("dismounted", OnDismounted)
 	inst.components.boostable_mauser:BoostOff(owner)
 	local rider = owner.components.rider:IsRiding()
 	if rider then
@@ -44,6 +61,8 @@ end
 local function OnUnequip(inst, owner)
 	owner.AnimState:Hide("ARM_carry")
 	owner.AnimState:Show("ARM_normal")
+	owner:RemoveEventCallback("mounted", OnMounted)
+	owner:RemoveEventCallback("dismounted", OnDismounted)
 	inst.components.boostable_mauser:BoostOff(owner)
 	inst:OnDefault()
 end
@@ -254,15 +273,6 @@ local function OnStopStarving(owner)
 	end
 end
 
-local function OnMounted(owner)
-	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if inst:HasTag("mauser_boost") then
-		inst.components.boostable_mauser:BoostOff(owner)
-	end
-	OnAnimSet(inst, owner)
-	inst:OnSwitch()
-end
-
 local function BoostOn(inst, owner)
 	inst:AddTag("mauser_boost")
 	local mult = PARAMS.MOVING_SPEED
@@ -275,7 +285,6 @@ local function BoostOn(inst, owner)
 		end
 		owner:ListenForEvent("startstarving", OnStartStarving)
 		owner:ListenForEvent("stopstarving", OnStopStarving)
-		owner:ListenForEvent("mounted", OnMounted)
     end
 end
 
@@ -287,7 +296,6 @@ local function BoostOff(inst, owner)
 		inst.components.boostable_mauser:DebuffOff(owner)
 		owner:RemoveEventCallback("startstarving", OnStartStarving)
 		owner:RemoveEventCallback("stopstarving", OnStopStarving)
-		owner:RemoveEventCallback("mounted", OnMounted)
 	end
 end
 
