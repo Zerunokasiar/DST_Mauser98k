@@ -32,8 +32,10 @@ local function OnMounted(owner)
 	if inst:HasTag("mauser_boost") then
 		inst.components.boostable_mauser:BoostOff(owner)
 	end
-	inst:OnAnimSet(owner)
-	inst:OnSwitch()
+	if inst.components.finiteuses_mauser:GetUses("ammo") > 0 then
+		inst:OnAnimSet(owner)
+		inst:OnSwitch()
+	else
 end
 
 local function OnDismounted(owner)
@@ -49,11 +51,11 @@ local function OnEquip(inst, owner)
 	owner:ListenForEvent("dismounted", OnDismounted)
 	inst.components.boostable_mauser:BoostOff(owner)
 	local rider = owner.components.rider:IsRiding()
-	if rider then
-		OnAnimSet(inst, owner)
+	if rider and inst.components.finiteuses_mauser:GetUses("ammo") > 0 then
+		inst:OnAnimSet(owner)
 		inst:OnSwitch()
 	else
-		OnAnimReset(inst, owner)
+		inst:OnAnimReset(owner)
 		inst:OnDefault()
 	end
 end
