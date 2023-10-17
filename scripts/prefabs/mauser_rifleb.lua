@@ -35,7 +35,7 @@ local function OnMounted(owner)
 	if inst.components.finiteuses_mauser:GetUses("ammo") > 0 then
 		inst:OnAnimSet(owner)
 		inst:OnSwitch()
-	else
+	end
 end
 
 local function OnDismounted(owner)
@@ -421,7 +421,7 @@ local function fn()
 		inst.components.weapon:SetProjectile(nil)
 		inst.components.weapon:SetOnAttack(OnHit)
 		inst.components.weapon:SetOnProjectileLaunch(nil)
-			end
+	end
 	inst.weapon_switch = function(inst)
 		local value = PARAMS.RIFLE_DMG_R * TUNING[PARAMS.RIFLE_R]
 		inst.components.weapon:SetDamage(value)
@@ -429,7 +429,7 @@ local function fn()
 		inst.components.weapon:SetProjectile("mauser_bullet")
 		inst.components.weapon:SetOnAttack(nil)
 		inst.components.weapon:SetOnProjectileLaunch(Firefn)
-			end
+	end
 	inst:weapon_default()
     return inst
 end

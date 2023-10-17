@@ -35,7 +35,7 @@ local function OnMounted(owner)
 	if inst.components.finiteuses_mauser:GetUses("ammo") > 0 then
 		inst:OnAnimSet(owner)
 		inst:OnSwitch()
-	else
+	end
 end
 
 local function OnDismounted(owner)
