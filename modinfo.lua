@@ -1,5 +1,5 @@
 name 						= "Mauser Rifle & Bayonet"
-version 					= "2.4.13m"
+version 					= "2.4.14m"
 description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n"..version
 author 						= "Zerunokasiar"
 forumthread 				= ""

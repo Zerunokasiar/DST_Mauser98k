@@ -34,7 +34,7 @@ RIFLE_ACTION.ONENTER = function(inst)
 			target = FUNCS.FindTarget(inst, target:GetPosition())
 		end
 	end
-	inst.AnimState:OverrideSymbol("swap_object", equip.AnimSet, equip.AnimBase)
+	equip:OnAnimSet(inst)
 	if inst.components.combat then
 		inst.components.combat:SetTarget(target)
 	end
@@ -59,7 +59,7 @@ RIFLE_ACTION.ONEXIT = function(inst)
 	local inventory = inst.components.inventory or inst.replica.inventory
 	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 	if equip and not equip:HasTag("mauser_switch") then
-		inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
+		equip:OnAnimReset(inst)
 	end
 	if inst.components.combat then
 		inst.components.combat:SetTarget(nil)
@@ -141,7 +141,7 @@ RIFLE_INSTANT_ACTION.ONENTER = function(inst)
 			target = FUNCS.FindTarget(inst, target:GetPosition())
 		end
 	end
-	inst.AnimState:OverrideSymbol("swap_object", equip.AnimSet, equip.AnimBase)
+	equip:OnAnimSet(inst)
 	if inst.components.combat then
 		inst.components.combat:SetTarget(target)
 	end
@@ -165,7 +165,7 @@ RIFLE_INSTANT_ACTION.ONEXIT = function(inst)
 	local inventory = inst.components.inventory or inst.replica.inventory
 	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 	if equip and not equip:HasTag("mauser_switch") then
-		inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
+		equip:OnAnimReset(inst)
 	end
 	if inst.components.combat then
 		inst.components.combat:SetTarget(nil)
@@ -247,7 +247,7 @@ RIFLE_CAV_ACTION.ONENTER = function(inst)
 			target = FUNCS.FindTarget(inst, target:GetPosition())
 		end
 	end
-	inst.AnimState:OverrideSymbol("swap_object", equip.AnimSet, equip.AnimBase)
+	equip:OnAnimSet(inst)
 	if inst.components.combat then
 		inst.components.combat:SetTarget(target)
 	else
@@ -273,7 +273,7 @@ RIFLE_CAV_ACTION.ONEXIT = function(inst)
 	local inventory = inst.components.inventory or inst.replica.inventory
 	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 	if equip and not equip:HasTag("mauser_switch") then
-		inst.AnimState:OverrideSymbol("swap_object", equip.AnimReset, equip.AnimBase)
+		equip:OnAnimReset(inst)
 	end
 	if inst.components.combat then
 		inst.components.combat:SetTarget(nil)

@@ -4,8 +4,7 @@ local assets =
 {
     Asset("ANIM","anim/player_actions_speargun.zip"),
 	Asset("ANIM", "anim/mauser_rifle.zip"),
-	Asset("ANIM", "anim/swap_mauser_rifle_m.zip"),
-	Asset("ANIM", "anim/swap_mauser_rifle_r.zip"),
+	Asset("ANIM", "anim/swap_mauser_rifle.zip"),
 	Asset("SOUNDPACKAGE", "sound/rifle.fev"),
 	Asset("SOUND", "sound/rifle.fsb"),
 	Asset("ATLAS", "images/inventoryimages/mauser_rifle.xml"),
@@ -20,11 +19,11 @@ local prefabs =
 }
 
 local function OnAnimSet(inst, owner)
-	owner.AnimState:OverrideSymbol("swap_object", inst.AnimSet, "swap_rifle")
+	owner.AnimState:OverrideSymbol("swap_object", "swap_mauser_rifle", "swap_range")
 end
 
 local function OnAnimReset(inst, owner)
-	owner.AnimState:OverrideSymbol("swap_object", inst.AnimReset, "swap_rifle")
+	owner.AnimState:OverrideSymbol("swap_object", "swap_mauser_rifle", "swap_melee")
 end
 
 local function OnMounted(owner)
@@ -334,9 +333,6 @@ local function fn()
 	inst:AddTag("mauser_rifle")
 	inst:AddTag(PARAMS.MAUSER_CHARGE_MOTION)
 
-	inst.AnimBase = "swap_rifle"
-	inst.AnimReset = "swap_mauser_rifle_m"
-	inst.AnimSet = "swap_mauser_rifle_r"
 	inst.OnAnimSet = OnAnimSet
 	inst.OnAnimReset = OnAnimReset
 	inst.OnDefault = OnDefault
