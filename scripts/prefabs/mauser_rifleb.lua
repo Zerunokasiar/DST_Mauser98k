@@ -301,16 +301,14 @@ local function BoostOff(inst, owner)
 end
 
 local function DebuffOn(inst, owner)
-	local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
-	local mult = PARAMS.MOVING_SPEED
-	local mult2 = mult * mult
-	inst.components.weapon:SetDamage(value / mult2)
+	if not inst:HasTag("mauser_switch") then
+		owner.components.combat.externaldamagemultipliers:SetModifier(inst, 1.0 / (PARAMS.MOVING_SPEED ^ 2), "MauserDebuff")
+	end
 	inst:RemoveTag("bayonet_action")
 end
 
 local function DebuffOff(inst, owner)
-	local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
-	inst.components.weapon:SetDamage(value)
+	owner.components.combat.externaldamagemultipliers:RemoveModifier(inst, "MauserDebuff")
 	inst:AddTag("bayonet_action")
 end
 
@@ -411,7 +409,7 @@ local function fn()
 
 	inst:AddComponent("weapon")
 	inst.weapon_default = function(inst)
-		local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.BAYONET_2]
+		local value = PARAMS.BAYONET_DMG_2 * TUNING[PARAMS.RIFLE_M]
 		inst.components.weapon:SetDamage(value)
 		inst.components.weapon:SetRange(2, 2)
 		inst.components.weapon:SetProjectile(nil)

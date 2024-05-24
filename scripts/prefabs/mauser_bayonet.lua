@@ -94,15 +94,11 @@ local function BoostOff(inst, owner)
 end
 
 local function DebuffOn(inst, owner)
-	local value = PARAMS.BAYONET_DMG_1 * TUNING[PARAMS.BAYONET_1]
-	local mult = PARAMS.MOVING_SPEED
-	local mult2 = mult * mult
-	inst.components.weapon:SetDamage(value / mult2)
+	owner.components.combat.externaldamagemultipliers:SetModifier(inst, 1.0 / (PARAMS.MOVING_SPEED ^ 2), "MauserDebuff")
 end
 
 local function DebuffOff(inst, owner)
-	local value = PARAMS.BAYONET_DMG_1 * TUNING[PARAMS.BAYONET_1]
-	inst.components.weapon:SetDamage(value)
+	owner.components.combat.externaldamagemultipliers:RemoveModifier(inst, "MauserDebuff")
 end
 
 local function fn()
@@ -149,7 +145,7 @@ local function fn()
 	inst.components.finiteuses:SetOnFinished(onBreak)
 
     inst:AddComponent("weapon")
-	inst.components.weapon:SetDamage(PARAMS.BAYONET_DMG_1 * TUNING[PARAMS.BAYONET_1])
+	inst.components.weapon:SetDamage(PARAMS.BAYONET_DMG_1 * TUNING[PARAMS.RIFLE_M])
 	
 	inst:AddComponent("trader")
 	inst.components.trader:SetAcceptTest(canReload)
