@@ -1,8 +1,7 @@
 Private Customized Version (BugFix & Remake)
 Original link : https://steamcommunity.com/sharedfiles/filedetails/?id=847687993
 DS link : https://steamcommunity.com/sharedfiles/filedetails/?id=1506383724
-DST link(release) : https://steamcommunity.com/sharedfiles/filedetails/?id=955048205
-DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=1850492645
+DST link : https://steamcommunity.com/sharedfiles/filedetails/?id=955048205
 
 [h1]목차[/h1]
 아이템 종류
@@ -36,7 +35,7 @@ DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=18504
 비교적 오래가는 무기입니다.
 보다 강한 힘을 추구할 때 사용됩니다.
 [table]
-[tr][td]공격력[/td][td]34[/td][/tr]
+[tr][td]공격력[/td][td]27.2[/td][/tr]
 [tr][td]사거리[/td][td]0[/td][/tr]
 [tr][td]내구도[/td][td]400[/td][/tr]
 [tr][td]특성[/td][td]
@@ -62,7 +61,7 @@ DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=18504
 총기 제작에 필요한 외형입니다.
 총검을 달아 장창과 같은 위력을 자랑합니다.
 [table]
-[tr][td]공격력[/td][td]68[/td][/tr]
+[tr][td]공격력[/td][td]42.5[/td][/tr]
 [tr][td]사거리[/td][td]2[/td][/tr]
 [tr][td]내구도[/td][td]200[/td][/tr]
 [tr][td]특성[/td][td]
@@ -87,8 +86,7 @@ DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=18504
 [table]
 [tr][td]근접전 공격력[/td][td]51[/td][td]원거리 공격력[/td][td]120[/td][/tr]
 [tr][td]근접전 사거리[/td][td]1[/td][td]원거리 사거리[/td][td]15[/td][/tr]
-[tr][td]내구도[/td][td]25[/td][/tr]
-[tr][td]최대탄창[/td][td]5[/td][/tr]
+[tr][td]내구도[/td][td]25[/td][td]최대탄창[/td][td]5[/td][/tr]
 [tr][td]특성[/td][td]
 돌격
 즉시사격
@@ -105,10 +103,9 @@ DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=18504
 총검을 장착한 총기입니다.
 별도의 근접전 모션과 함께 강력한 근접전 성능을 제공합니다.
 [table]
-[tr][td]근접전 공격력[/td][td]68[/td][td]원거리 공격력[/td][td]120[/td][/tr]
+[tr][td]근접전 공격력[/td][td]42.5[/td][td]원거리 공격력[/td][td]120[/td][/tr]
 [tr][td]근접전 사거리[/td][td]2[/td][td]원거리 사거리[/td][td]15[/td][/tr]
-[tr][td]내구도[/td][td]200[/td][/tr]
-[tr][td]최대탄창[/td][td]5[/td][/tr]
+[tr][td]내구도[/td][td]200[/td][td]최대탄창[/td][td]5[/td][/tr]
 [tr][td]특성[/td][td]
 돌격
 즉시사격

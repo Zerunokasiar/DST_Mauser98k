@@ -1,5 +1,5 @@
 name 						= "Mauser Rifle & Bayonet"
-version 					= "2.4.15"
+version 					= "2.4.16"
 description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n"..version
 author 						= "Zerunokasiar"
 forumthread 				= ""
@@ -297,25 +297,25 @@ configuration_options =
 		name 	= "mauser_rifle_2_dmg_factor.2_5_0",
 		label 	= "Mauser Ranged Damage Factor",
 		options = GetDamageTable(RIFLE_R, 120, 0.05, 40),
-        default = 0.05 * 20,
+        default = 0.05 * 20, -- 120
 	},
 	{
 		name 	= "mauser_rifle_1_dmg_factor.2_5_0",
 		label 	= "Mauser Melee Damage Factor",
 		options = GetDamageTable(RIFLE_M, 34, 0.05, 100),
-        default = 0.05 * 30,
+        default = 0.05 * 30, -- 51
 	},
 	{
 		name 	= "mauser_bayonet_2_dmg_factor.2_5_0",
 		label 	= "Equipped Bayonet Damage Factor",
 		options = GetDamageTable(RIFLE_M, 34, 0.05, 100),
-        default = 0.05 * 25,
+        default = 0.05 * 25, -- 42.5
 	},
 	{
 		name 	= "mauser_bayonet_1_dmg_factor.2_5_0",
 		label 	= "Standalone Bayonet Damage Factor",
 		options = GetDamageTable(RIFLE_M, 34, 0.05, 100),
-        default = 0.05 * 10,
+        default = 0.05 * 16, -- 27.2
 	},
 	{
 		name 	= "mauser_rifle_hp_value.2_3_0",

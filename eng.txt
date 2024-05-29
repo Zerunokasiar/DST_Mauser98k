@@ -1,8 +1,7 @@
 Private Customized Version (BugFix & Remake)
 Original link : https://steamcommunity.com/sharedfiles/filedetails/?id=847687993
 DS link : https://steamcommunity.com/sharedfiles/filedetails/?id=1506383724
-DST link(release) : https://steamcommunity.com/sharedfiles/filedetails/?id=955048205
-DST link(develop) : https://steamcommunity.com/sharedfiles/filedetails/?id=1850492645
+DST link : https://steamcommunity.com/sharedfiles/filedetails/?id=955048205
 
 [h1]Index[/h1]
 Items
@@ -36,7 +35,7 @@ Used for ranged attack.
 Relatively long lasting weapon.
 It's also used pursuit of more strong power.
 [table]
-[tr][td]Attack[/td][td]34[/td][/tr]
+[tr][td]Attack[/td][td]27.2[/td][/tr]
 [tr][td]Range[/td][td]0[/td][/tr]
 [tr][td]Durability[/td][td]400[/td][/tr]
 [tr][td]Trait[/td][td]
@@ -62,7 +61,7 @@ Repair Gunstock
 It is model needed to make a gun.
 It boasts powerful such as pike by that equipped bayonet.
 [table]
-[tr][td]Attack[/td][td]68[/td][/tr]
+[tr][td]Attack[/td][td]42.5[/td][/tr]
 [tr][td]Range[/td][td]2[/td][/tr]
 [tr][td]Durability[/td][td]200[/td][/tr]
 [tr][td]Trait[/td][td]
@@ -105,7 +104,7 @@ Broken Gun
 It's a gun about bayonet equipped.
 Provide strong combat performance with separate close combat motion.
 [table]
-[tr][td]Melee Attack[/td][td]68[/td][td]Ranged Attack[/td][td]120[/td][/tr]
+[tr][td]Melee Attack[/td][td]42.5[/td][td]Ranged Attack[/td][td]120[/td][/tr]
 [tr][td]Hit Range[/td][td]2[/td][td]Fire Range[/td][td]15[/td][/tr]
 [tr][td]Durability[/td][td]200[/td][/tr]
 [tr][td]Maximum Clip[/td][td]5[/td][/tr]
