@@ -431,18 +431,19 @@ BAYONET_ACTION.STATE_CLIENT = State({
 AddStategraphState("wilson", BAYONET_ACTION.STATE)
 AddStategraphState("wilson_client", BAYONET_ACTION.STATE_CLIENT)
 
-local function ChargeAction(inst, action)
-	if action.invobject ~= nil then
-		return (action.invobject:HasTag("flute") and "play_flute")
-			or (action.invobject:HasTag("horn") and "play_horn")
-			or (action.invobject:HasTag("bell") and "play_bell")
-			or (action.invobject:HasTag("whistle") and "play_whistle")
-			or nil
+if PARAMS.MAUSER_CHARGE_MOTION ~= "instant" then
+	local function ChargeAction(inst, action)
+		if action.invobject ~= nil then
+			return (action.invobject:HasTag("flute") and "play_flute")
+				or (action.invobject:HasTag("horn") and "play_horn")
+				or (action.invobject:HasTag("bell") and "play_bell")
+				or (action.invobject:HasTag("whistle") and "play_whistle")
+				or nil
+		end
 	end
+	AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.MAUSER_CHARGE, ChargeAction))
+	AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.MAUSER_CHARGE, ChargeAction))
 end
-
-AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.MAUSER_CHARGE, ChargeAction))
-AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.MAUSER_CHARGE, ChargeAction))
 
 local function RangedAction(inst, action)
 	local playercontroller = inst.components.playercontroller

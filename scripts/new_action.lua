@@ -4,7 +4,7 @@ STRINGS = GLOBAL.STRINGS
 ACTIONS = GLOBAL.ACTIONS
 TheSim = TheSim or GLOBAL.TheSim
 
-local MAUSER_CHARGE = Action({ priority = -2, rmb = true, distance = math.huge})
+local MAUSER_CHARGE = Action({ priority = -999, rmb = true, instant = PARAMS.MAUSER_CHARGE_MOTION == "instant", distance = math.huge})
 MAUSER_CHARGE.str = "Charge!"
 MAUSER_CHARGE.id = "MAUSER_CHARGE"
 MAUSER_CHARGE.fn = function(act)
@@ -70,8 +70,7 @@ end
 local function autoaim_target(inst, doer, target, actions, right)
 	if not right then return end
 	if not inst:HasTag("mauser_rifle") then return end
-	local flag = doer.replica.combat
-	flag = flag and flag:CanTarget(target) and not flag:IsAlly(target)
+	local flag = FUNCS.CheckTarget(doer.replica.combat, target)
 	if flag then
 		table.insert(actions, ACTIONS.MAUSER_RANGED)
 		return
@@ -80,12 +79,6 @@ local function autoaim_target(inst, doer, target, actions, right)
 end
 
 local function boost_point(inst, doer, pos, actions, right)
-	if not right then return end
-	if inst:HasTag("mauser_boost") then return end
-	table.insert(actions, ACTIONS.MAUSER_CHARGE)
-end
-
-local function boost_equipped(inst, doer, target, actions, right)
 	if not right then return end
 	if inst:HasTag("mauser_boost") then return end
 	table.insert(actions, ACTIONS.MAUSER_CHARGE)
@@ -105,7 +98,6 @@ end
 -- ISVALID = --args: inst, action, right
 
 AddComponentAction("POINT", "boostable_mauser", boost_point)
-AddComponentAction("EQUIPPED", "boostable_mauser", boost_equipped)
 AddComponentAction("POINT", "finiteuses_mauser", autoaim_point)
 AddComponentAction("EQUIPPED", "finiteuses_mauser", autoaim_target)
 AddComponentAction("INVENTORY", "activatable_mauser", inventory_ammo)

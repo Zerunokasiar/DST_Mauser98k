@@ -86,8 +86,7 @@ Emergency response is possible through melee/ranged attack changed.
 [table]
 [tr][td]Melee Attack[/td][td]51[/td][td]Ranged Attack[/td][td]120[/td][/tr]
 [tr][td]Hit Range[/td][td]1[/td][td]Fire Range[/td][td]15[/td][/tr]
-[tr][td]Durability[/td][td]25[/td][/tr]
-[tr][td]Maximum Clip[/td][td]5[/td][/tr]
+[tr][td]Durability[/td][td]25[/td][td]Maximum Clip[/td][td]5[/td][/tr]
 [tr][td]Trait[/td][td]
 Charge
 Instant Fire
@@ -106,8 +105,7 @@ Provide strong combat performance with separate close combat motion.
 [table]
 [tr][td]Melee Attack[/td][td]42.5[/td][td]Ranged Attack[/td][td]120[/td][/tr]
 [tr][td]Hit Range[/td][td]2[/td][td]Fire Range[/td][td]15[/td][/tr]
-[tr][td]Durability[/td][td]200[/td][/tr]
-[tr][td]Maximum Clip[/td][td]5[/td][/tr]
+[tr][td]Durability[/td][td]200[/td][td]Maximum Clip[/td][td]5[/td][/tr]
 [tr][td]Trait[/td][td]
 Charge
 Instant Fire

@@ -1,5 +1,5 @@
 name 						= "Mauser Rifle & Bayonet"
-version 					= "2.4.16"
+version 					= "2.4.17"
 description 				= "author : Snipe\nOriginal version : 1.13\nAdds Mauser 98K to the base game.\n"..version
 author 						= "Zerunokasiar"
 forumthread 				= ""
@@ -188,6 +188,7 @@ configuration_options =
 			{description = "bell",	data = "bell",	hover = nil},
 			{description = "horn",	data = "horn",	hover = nil},
 			{description = "flute",	data = "flute",	hover = nil},
+			{description = "instant",	data = "instant",	hover = nil},
 		},
         default = "whistle",
 	},

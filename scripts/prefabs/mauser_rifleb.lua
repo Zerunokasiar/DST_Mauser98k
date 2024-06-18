@@ -15,7 +15,7 @@ local assets =
 
 local prefabs =
 {
-	"impact",
+	"impact", "emote_fx", "wx78_musicbox_fx"
 }
 
 local function OnAnimSet(inst, owner)
@@ -260,20 +260,6 @@ local function OnChange(inst)
 	inst:Remove()
 end
 
-local function OnStartStarving(owner)
-	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if inst:HasTag("mauser_boost") then
-		inst.components.boostable_mauser:DebuffOn(owner)
-	end
-end
-
-local function OnStopStarving(owner)
-	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if inst:HasTag("mauser_boost") then
-		inst.components.boostable_mauser:DebuffOff(owner)
-	end
-end
-
 local function BoostOn(inst, owner)
 	inst:AddTag("mauser_boost")
 	local mult = PARAMS.MOVING_SPEED
@@ -284,9 +270,11 @@ local function BoostOn(inst, owner)
 		if owner.components.hunger:IsStarving() then
 			inst.components.boostable_mauser:DebuffOn(owner)
 		end
-		owner:ListenForEvent("startstarving", OnStartStarving)
-		owner:ListenForEvent("stopstarving", OnStopStarving)
+		owner:ListenForEvent("startstarving", FUNCS.OnStartStarving)
+		owner:ListenForEvent("stopstarving", FUNCS.OnStopStarving)
     end
+	FUNCS.BoostTaskOff(owner)
+	FUNCS.BoostTaskOn(owner)
 end
 
 local function BoostOff(inst, owner)
@@ -295,9 +283,10 @@ local function BoostOff(inst, owner)
     if owner.components.hunger ~= nil then
         owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
 		inst.components.boostable_mauser:DebuffOff(owner)
-		owner:RemoveEventCallback("startstarving", OnStartStarving)
-		owner:RemoveEventCallback("stopstarving", OnStopStarving)
+		owner:RemoveEventCallback("startstarving", FUNCS.OnStartStarving)
+		owner:RemoveEventCallback("stopstarving", FUNCS.OnStopStarving)
 	end
+	FUNCS.BoostTaskOff(owner)
 end
 
 local function DebuffOn(inst, owner)

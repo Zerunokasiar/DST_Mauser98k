@@ -11,13 +11,11 @@ local function onEquip(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_object", "swap_mauser_bayonet", "swap_bayonet")
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
-	inst.components.boostable_mauser:BoostOff(owner)
 end
 
 local function onUnequip(inst, owner)
 	owner.AnimState:Hide("ARM_carry")
 	owner.AnimState:Show("ARM_normal")
-	inst.components.boostable_mauser:BoostOff(owner)
 end
 
 local function canReload(inst, item)
@@ -42,63 +40,6 @@ end
 
 local function onBreak(inst)
 	inst:Remove()
-end
-
-local function OnStartStarving(owner)
-	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if inst:HasTag("mauser_boost") then
-		inst.components.boostable_mauser:DebuffOn(owner)
-	end
-end
-
-local function OnStopStarving(owner)
-	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if inst:HasTag("mauser_boost") then
-		inst.components.boostable_mauser:DebuffOff(owner)
-	end
-end
-
-local function OnMounted(owner)
-	local inst = owner.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if inst:HasTag("mauser_boost") then
-		inst.components.boostable_mauser:BoostOff(owner)
-	end
-end
-
-local function BoostOn(inst, owner)
-	inst:AddTag("mauser_boost")
-	local mult = PARAMS.MOVING_SPEED
-	inst.components.equippable.walkspeedmult = mult
-	local mult2 = mult * mult
-	if owner.components.hunger ~= nil then
-        owner.components.hunger.burnratemodifiers:SetModifier(inst, mult)
-		if owner.components.hunger:IsStarving() then
-			inst.components.boostable_mauser:DebuffOn(owner)
-		end
-		owner:ListenForEvent("startstarving", OnStartStarving)
-		owner:ListenForEvent("stopstarving", OnStopStarving)
-		owner:ListenForEvent("mounted", OnMounted)
-    end
-end
-
-local function BoostOff(inst, owner)
-	inst:RemoveTag("mauser_boost")
-	inst.components.equippable.walkspeedmult = 1.0
-    if owner.components.hunger ~= nil then
-        owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
-		inst.components.boostable_mauser:DebuffOff(owner)
-		owner:RemoveEventCallback("startstarving", OnStartStarving)
-		owner:RemoveEventCallback("stopstarving", OnStopStarving)
-		owner:RemoveEventCallback("mounted", OnMounted)
-	end
-end
-
-local function DebuffOn(inst, owner)
-	owner.components.combat.externaldamagemultipliers:SetModifier(inst, 1.0 / (PARAMS.MOVING_SPEED ^ 2), "MauserDebuff")
-end
-
-local function DebuffOff(inst, owner)
-	owner.components.combat.externaldamagemultipliers:RemoveModifier(inst, "MauserDebuff")
 end
 
 local function fn()
@@ -129,12 +70,6 @@ local function fn()
     inst.components.inventoryitem.imagename = "mauser_bayonet"
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/mauser_bayonet.xml"
 	
-	inst:AddComponent("boostable_mauser")
-	inst.components.boostable_mauser:SetBoostOn(BoostOn)
-	inst.components.boostable_mauser:SetBoostOff(BoostOff)
-	inst.components.boostable_mauser:SetDebuffOn(DebuffOn)
-	inst.components.boostable_mauser:SetDebuffOff(DebuffOff)
-
 	inst:AddComponent("equippable")
 	inst.components.equippable:SetOnEquip(onEquip)
 	inst.components.equippable:SetOnUnequip(onUnequip)
