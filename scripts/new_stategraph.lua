@@ -58,7 +58,7 @@ end
 RIFLE_ACTION.ONEXIT = function(inst)
 	local inventory = inst.components.inventory or inst.replica.inventory
 	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if equip and not equip:HasTag("mauser_switch") then
+	if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
 		equip:OnAnimReset(inst)
 	end
 	if inst.components.combat then
@@ -164,7 +164,7 @@ end
 RIFLE_INSTANT_ACTION.ONEXIT = function(inst)
 	local inventory = inst.components.inventory or inst.replica.inventory
 	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if equip and not equip:HasTag("mauser_switch") then
+	if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
 		equip:OnAnimReset(inst)
 	end
 	if inst.components.combat then
@@ -272,7 +272,7 @@ end
 RIFLE_CAV_ACTION.ONEXIT = function(inst)
 	local inventory = inst.components.inventory or inst.replica.inventory
 	local equip = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if equip and not equip:HasTag("mauser_switch") then
+	if equip and equip:HasTag("mauser_rifle") and not equip:HasTag("mauser_switch") then
 		equip:OnAnimReset(inst)
 	end
 	if inst.components.combat then
