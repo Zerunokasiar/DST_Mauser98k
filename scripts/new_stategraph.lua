@@ -82,9 +82,9 @@ local RIFLE_ACTION = State({
 		end
 		inst.sg.statemem.action = nil
 		inst.components.combat:SetTarget(nil)
-		if inst.sg:HasStateTag("abouttoattack") then
-			inst.components.combat:CancelAttack()
-		end
+		-- if inst.sg:HasStateTag("abouttoattack") then
+		-- 	inst.components.combat:CancelAttack()
+		-- end
 		inst.sg:RemoveStateTag("attack")
 		inst.sg:AddStateTag("idle")
 		inst.sg:GoToState("idle", true)
@@ -108,9 +108,9 @@ local RIFLE_ACTION = State({
 		end
 		inst.sg.statemem.action = nil
 		inst.components.combat:SetTarget(nil)
-		if inst.sg:HasStateTag("abouttoattack") then
-			inst.components.combat:CancelAttack()
-		end
+		-- if inst.sg:HasStateTag("abouttoattack") then
+		-- 	inst.components.combat:CancelAttack()
+		-- end
 		inst.sg:RemoveStateTag("attack")
 		inst.sg:AddStateTag("idle")
 	end,
@@ -169,9 +169,9 @@ local RIFLE_ACTION_AUTO = State({
 		end
 		inst.sg.statemem.action = nil
 		inst.components.combat:SetTarget(nil)
-		if inst.sg:HasStateTag("abouttoattack") then
-			inst.components.combat:CancelAttack()
-		end
+		-- if inst.sg:HasStateTag("abouttoattack") then
+		-- 	inst.components.combat:CancelAttack()
+		-- end
 		inst.sg:RemoveStateTag("attack")
 		inst.sg:AddStateTag("idle")
 		inst.sg:GoToState("idle", true)
@@ -195,9 +195,9 @@ local RIFLE_ACTION_AUTO = State({
 		end
 		inst.sg.statemem.action = nil
 		inst.components.combat:SetTarget(nil)
-		if inst.sg:HasStateTag("abouttoattack") then
-			inst.components.combat:CancelAttack()
-		end
+		-- if inst.sg:HasStateTag("abouttoattack") then
+		-- 	inst.components.combat:CancelAttack()
+		-- end
 		inst.sg:RemoveStateTag("attack")
 		inst.sg:AddStateTag("idle")
 	end,
