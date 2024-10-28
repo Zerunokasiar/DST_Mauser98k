@@ -48,11 +48,17 @@ if GLOBAL.TheSim:GetGameID() == "DST" then
 	AddRecipe("mauser_rifle",cost_rifle,  RECIPETABS.WAR, tech_rifle, nil, nil, nil, 1, nil, "images/inventoryimages/mauser_rifle.xml")
 else
 	local function AddRecipe(_recName, _ingrList, _tab, _techLevel, _recType, _placer, _spacing, _proxyLock, _amount)
+		
+		if GLOBAL.PORKLAND_DLC and GLOBAL.IsDLCEnabled(GLOBAL.PORKLAND_DLC) then
+			return GLOBAL.Recipe(_recName, _ingrList , _tab, _techLevel, _recType, _placer, _spacing, _proxyLock, _amount)
+		end
 		if GLOBAL.CAPY_DLC and GLOBAL.IsDLCEnabled(GLOBAL.CAPY_DLC) then
 			return GLOBAL.Recipe(_recName, _ingrList , _tab, _techLevel, _recType, _placer, _spacing, _proxyLock, _amount)
-		else
-			return GLOBAL.Recipe(_recName, _ingrList , _tab, _techLevel, _placer, _spacing, _proxyLock, _amount)
 		end
+		if GLOBAL.REIGN_OF_GIANTS and GLOBAL.IsDLCEnabled(GLOBAL.REIGN_OF_GIANTS) then
+			return Recipe(_recName, _ingrList , _tab, _techLevel, _placer, _spacing, _proxyLock, _amount)
+		end
+		return Recipe(_recName, _ingrList , _tab, _techLevel, _placer, _spacing, _proxyLock, _amount)
 	end
 
 	local mauser_ammo = AddRecipe("mauser_ammo",cost_ammo, RECIPETABS.WAR, tech_ammo, "common", nil, nil, nil, 5)
